@@ -1,7 +1,8 @@
 {
   "name": "react-country-maps",
-  "private": true,
   "version": "0.0.0",
+  "description": "A collection of React components for displaying country maps",
+  "readme": "./README.md",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,6 +10,24 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "build:country": "tsx scripts/build-country.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/knetic0/react-country-maps"
+  },
+  "keywords": [
+    "country-maps",
+    "react",
+    "country-maps-react",
+    "maps",
+    "countries",
+    "svg",
+    "interactive"
+  ],
+  "author": "Mehmet Solak <solakmehmet02@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/knetic0/react-country-maps/issues"
   },
   "dependencies": {
     "react": "^19.2.8",
