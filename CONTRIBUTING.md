@@ -119,7 +119,8 @@ react-country-maps/
 │   └── utils/
 │       └── defineCountry.ts  # Typed helper for country definitions
 ├── scripts/
-│   └── build-country.ts      # Country data generator
+│   ├── build-country.ts      # Country data generator
+│   └── region-overrides.ts   # Fixes for wrong ISO codes in Natural Earth
 ├── test/                     # Vitest tests, including country data checks
 ├── playground/               # Local development app (not published)
 └── raw/                      # Source shapefiles (not committed)
@@ -163,6 +164,13 @@ The script:
 2. Simplifies the shapes with [mapshaper](https://github.com/mbloch/mapshaper)
 3. Projects them to SVG paths with a Mercator projection, 1000 units wide
 4. Writes `src/countries/<folder>/index.ts` and `src/countries/<folder>/regions.ts`
+
+Every region ID must be a unique ISO 3166-2 code, and `pnpm test` checks this. Natural Earth sometimes gives two features the same code. The script then does two things:
+
+- It applies the fixes in [`scripts/region-overrides.ts`](./scripts/region-overrides.ts). Add a fix there, keyed by the Natural Earth `adm1_code`, when a feature has a wrong code (for example a province that reuses the code of its capital city).
+- It merges features that still share a code into one region, for example a county that Natural Earth splits into councils. The merged region gets the name of its largest part, unless `MERGED_NAMES` sets one.
+
+The script prints a warning for each duplicate ID or empty name that is left.
 
 ### 3. Check the Result
 

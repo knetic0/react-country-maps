@@ -88,7 +88,7 @@ Import a country from `react-country-maps/countries/<name>`.
 | Belgium       | `react-country-maps/countries/belgium`      | `BE`     |      11 |
 | Brazil        | `react-country-maps/countries/brazil`       | `BR`     |      27 |
 | Bulgaria      | `react-country-maps/countries/bulgaria`     | `BG`     |      28 |
-| Croatia       | `react-country-maps/countries/croatia`      | `HR`     |      21 |
+| Croatia       | `react-country-maps/countries/croatia`      | `HR`     |      20 |
 | Czechia       | `react-country-maps/countries/czechia`      | `CZ`     |      14 |
 | Denmark       | `react-country-maps/countries/denmark`      | `DK`     |       5 |
 | Egypt         | `react-country-maps/countries/egypt`        | `EG`     |      27 |
@@ -99,21 +99,21 @@ Import a country from `react-country-maps/countries/<name>`.
 | Hungary       | `react-country-maps/countries/hungary`      | `HU`     |      43 |
 | Indonesia     | `react-country-maps/countries/indonesia`    | `ID`     |      33 |
 | Iran          | `react-country-maps/countries/iran`         | `IR`     |      31 |
-| Ireland       | `react-country-maps/countries/ireland`      | `IE`     |      34 |
+| Ireland       | `react-country-maps/countries/ireland`      | `IE`     |      26 |
 | Japan         | `react-country-maps/countries/japan`        | `JP`     |      47 |
 | Kazakhstan    | `react-country-maps/countries/kazakhstan`   | `KZ`     |      16 |
 | Kenya         | `react-country-maps/countries/kenya`        | `KE`     |       8 |
 | Latvia        | `react-country-maps/countries/latvia`       | `LV`     |     119 |
 | Lithuania     | `react-country-maps/countries/lithuania`    | `LT`     |      10 |
-| Mexico        | `react-country-maps/countries/mexico`       | `MX`     |      33 |
+| Mexico        | `react-country-maps/countries/mexico`       | `MX`     |      32 |
 | Nigeria       | `react-country-maps/countries/nigeria`      | `NG`     |      37 |
 | Peru          | `react-country-maps/countries/peru`         | `PE`     |      26 |
-| Philippines   | `react-country-maps/countries/philippines`  | `PH`     |     118 |
+| Philippines   | `react-country-maps/countries/philippines`  | `PH`     |      83 |
 | Poland        | `react-country-maps/countries/poland`       | `PL`     |      16 |
 | Romania       | `react-country-maps/countries/romania`      | `RO`     |      42 |
 | Saudi Arabia  | `react-country-maps/countries/saudi-arabia` | `SA`     |      13 |
 | Slovakia      | `react-country-maps/countries/slovakia`     | `SK`     |       8 |
-| Slovenia      | `react-country-maps/countries/slovenia`     | `SI`     |     193 |
+| Slovenia      | `react-country-maps/countries/slovenia`     | `SI`     |     192 |
 | South Korea   | `react-country-maps/countries/south-korea`  | `KR`     |      17 |
 | Sweden        | `react-country-maps/countries/sweden`       | `SE`     |      21 |
 | Switzerland   | `react-country-maps/countries/switzerland`  | `CH`     |      26 |
@@ -125,7 +125,7 @@ Import a country from `react-country-maps/countries/<name>`.
 
 Region IDs follow the [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) standard, for example `DE-BY` for Bavaria or `JP-13` for Tokyo. You can use them as stable keys to join the map with your own data.
 
-**Exception:** Turkey uses lowercase, ASCII-only province slugs (for example `istanbul`, `canakkale`, `bursa`) instead of ISO 3166-2 codes.
+Every country uses this format, including Turkey (for example `TR-34` for İstanbul and `TR-16` for Bursa, the same numbers as the license plate codes). Each ID belongs to exactly one region.
 
 To see the exact IDs of a country, read them from the data:
 

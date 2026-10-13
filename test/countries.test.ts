@@ -12,29 +12,6 @@ const countries = Object.entries(modules).map(([file, module]) => ({
   country: module.default,
 }));
 
-// Natural Earth gives some regions the same ISO 3166-2 code, for example a
-// city and the province around it. Fixing this changes region IDs, so it waits
-// for a maintainer decision. The list must match the data exactly, so new
-// duplicates fail and fixed ones must be removed from here.
-const KNOWN_DUPLICATE_IDS: Record<string, string[]> = {
-  croatia: ["HR-12"],
-  iran: ["IR-07"],
-  ireland: ["IE-CO", "IE-D", "IE-G", "IE-LK", "IE-TA", "IE-WD"],
-  kazakhstan: ["KZ-ALA"],
-  latvia: ["LV-DGV", "LV-JEL", "LV-JKB", "LV-REZ", "LV-VEN"],
-  peru: ["PE-LIM"],
-  philippines: [
-    "PH-AGN", "PH-BEN", "PH-CAS", "PH-CEB", "PH-DAV", "PH-ILI", "PH-ISA", "PH-LAN", "PH-LEY",
-    "PH-MNL", "PH-MSR", "PH-NCO", "PH-PAM", "PH-PAN", "PH-PLW", "PH-QUE", "PH-SCO", "PH-ZAN", "PH-ZMB",
-  ],
-  slovenia: ["SI-054"],
-};
-
-// Natural Earth feature without a name. Same decision as above.
-const KNOWN_UNNAMED_IDS: Record<string, string[]> = {
-  mexico: ["MX-X01~"],
-};
-
 // Turkey is hand-made with curves, so its file is larger than generated ones
 const MAX_FILE_KB: Record<string, number> = { turkey: 200 };
 const DEFAULT_MAX_FILE_KB = 100;
@@ -63,16 +40,16 @@ describe.each(countries)("$folder", ({ folder, country }) => {
     expect(height).toBeGreaterThan(0);
   });
 
-  it("has non-empty, unique region ids and non-empty names", () => {
-    const counts = new Map<string, number>();
-    for (const { id } of country.regions) counts.set(id, (counts.get(id) ?? 0) + 1);
-    const duplicates = [...counts].filter(([, n]) => n > 1).map(([id]) => id).sort();
-    expect(duplicates).toEqual(KNOWN_DUPLICATE_IDS[folder] ?? []);
+  it("has unique ISO 3166-2 region ids and non-empty names", () => {
+    const ids = country.regions.map((r) => r.id);
+    const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
+    expect(duplicates).toEqual([]);
 
-    const unnamed = country.regions.filter((r) => !r.name.trim()).map((r) => r.id);
-    expect(unnamed).toEqual(KNOWN_UNNAMED_IDS[folder] ?? []);
-
-    for (const { id } of country.regions) expect(id.trim()).not.toBe("");
+    const isoCode = new RegExp(`^${country.id}-[A-Z0-9]{1,3}$`);
+    for (const { id, name } of country.regions) {
+      expect(id).toMatch(isoCode);
+      expect(name.trim(), id).not.toBe("");
+    }
   });
 
   it("has parseable, non-empty paths", () => {

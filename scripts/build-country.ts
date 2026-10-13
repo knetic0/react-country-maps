@@ -3,6 +3,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { geoMercator, geoPath } from "d3-geo";
 import type { FeatureCollection, Geometry, Position } from "geojson";
+import { FEATURE_FIXES, MERGED_NAMES } from "./region-overrides.ts";
 
 // "pnpm build:country -- DE germany" forwards the "--", so drop it
 const [iso, folder, simplify = "8%"] = process.argv.slice(2).filter((arg) => arg !== "--");
@@ -30,6 +31,9 @@ if (!/^\d+(\.\d+)?%$/.test(simplify)) {
 const SOURCE = resolve("raw/ne_10m_admin_1_states_provinces.shp");
 const TMP_DIR = resolve("raw/tmp");
 const TMP_FILE = resolve(TMP_DIR, `${iso}.geojson`);
+const FIXED_FILE = resolve(TMP_DIR, `${iso}.fixed.geojson`);
+const MERGED_FILE = resolve(TMP_DIR, `${iso}.merged.geojson`);
+const MAPSHAPER = resolve("node_modules/.bin/mapshaper");
 const OUT_DIR = resolve("src/countries", folder);
 const WIDTH = 1000;
 
@@ -39,11 +43,11 @@ mkdirSync(TMP_DIR, { recursive: true });
 
 try {
   execFileSync(
-    resolve("node_modules/.bin/mapshaper"),
+    MAPSHAPER,
     [
       SOURCE,
       "-filter", `iso_a2 == "${iso}"`,
-      "-filter-fields", "iso_3166_2,name,admin",
+      "-filter-fields", "iso_3166_2,adm1_code,name,admin",
       "-simplify", simplify, "keep-shapes",
       "-o", "format=geojson", TMP_FILE,
     ],
@@ -55,8 +59,10 @@ try {
   process.exit(1);
 }
 
-type Props = { iso_3166_2: string; name: string; admin: string };
-const fc = JSON.parse(readFileSync(TMP_FILE, "utf8")) as FeatureCollection<Geometry, Props>;
+type Props = { iso_3166_2: string; adm1_code: string; name: string; admin: string };
+const readCollection = (file: string) =>
+  JSON.parse(readFileSync(file, "utf8")) as FeatureCollection<Geometry, Props>;
+let fc = readCollection(TMP_FILE);
 
 if (fc.features.length === 0) {
   console.error(`"${iso}" not found in ${SOURCE}`);
@@ -64,6 +70,37 @@ if (fc.features.length === 0) {
 }
 
 const countryName = fc.features[0].properties.admin;
+
+// Fix the ISO codes that Natural Earth gets wrong (see region-overrides.ts)
+for (const { properties } of fc.features) {
+  const fix = FEATURE_FIXES[properties.adm1_code] ?? FEATURE_FIXES[properties.iso_3166_2];
+  if (!fix) continue;
+  properties.iso_3166_2 = fix.id ?? properties.iso_3166_2;
+  properties.name = fix.name ?? properties.name;
+}
+
+// Features that still share a code are parts of one subdivision, for example
+// a county split into councils. Merge them, so every id is a single region.
+const ids = fc.features.map((f) => f.properties.iso_3166_2);
+if (new Set(ids).size < ids.length) {
+  writeFileSync(FIXED_FILE, JSON.stringify(fc));
+  execFileSync(
+    MAPSHAPER,
+    [
+      FIXED_FILE,
+      // Sort by area, so a merged region gets the name of its largest part
+      "-each", "area_m2 = this.area",
+      "-sort", "area_m2", "descending",
+      "-dissolve", "iso_3166_2", "copy-fields=name,admin",
+      "-o", "format=geojson", MERGED_FILE,
+    ],
+    { stdio: "inherit" }
+  );
+  fc = readCollection(MERGED_FILE);
+  for (const { properties } of fc.features) {
+    properties.name = MERGED_NAMES[properties.iso_3166_2] ?? properties.name;
+  }
+}
 
 const ringArea = (ring: Position[]) => {
   let sum = 0;
