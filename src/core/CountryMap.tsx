@@ -100,7 +100,7 @@ const Region = memo(function Region({
   );
 });
 
-export function Map({
+export function CountryMap({
   data,
   viewBox,
   visible = true,

@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import turkey from "../src/countries/turkey";
+import { CountryMap } from "../src";
 import type { Region } from "../src/core/types";
-import { Map } from "../src/core/Map";
 
 export default function App() {
   const [dark, setDark] = useState(true);
@@ -58,7 +58,7 @@ export default function App() {
       </section>
 
       <main className="map-card">
-        <Map
+        <CountryMap
           data={turkey}
           showTooltip={showTooltip}
           hoverable={hoverable}
@@ -101,7 +101,7 @@ export default function App() {
 
       <section className="multi">
         <span>Aynı sayfada ikinci harita (ID çakışması testi)</span>
-        <Map data={turkey} showTooltip customStyle={{ idleColor: "#a1a1aa", hoverColor: "#16a34a" }} />
+        <CountryMap data={turkey} showTooltip customStyle={{ idleColor: "#a1a1aa", hoverColor: "#16a34a" }} />
       </section>
     </div>
   );
