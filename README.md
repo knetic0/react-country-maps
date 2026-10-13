@@ -435,46 +435,13 @@ Path coordinates must use the same coordinate system as the `viewBox`.
 
 ## Contributing
 
-Contributions are welcome, especially new countries.
-
-### Development Setup
+Contributions are welcome, especially new countries. Most countries can be added with a single command:
 
 ```bash
-git clone <repository-url>
-cd react-country-maps
-pnpm install
-pnpm dev
+pnpm build:country FR france 8%
 ```
 
-`pnpm dev` starts the playground at `http://localhost:5173`. The playground loads every country in `src/countries/` automatically, so you can test new data immediately.
-
-| Script                 | Description                                   |
-| ---------------------- | --------------------------------------------- |
-| `pnpm dev`             | Start the playground with hot reload          |
-| `pnpm build`           | Type-check and build                          |
-| `pnpm lint`            | Run ESLint                                    |
-| `pnpm build:country`   | Generate country data from Natural Earth      |
-
-### Adding a Country
-
-Country data is generated from the [Natural Earth Admin 1 – States, Provinces](https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-1-states-provinces/) dataset (1:10m scale).
-
-1. Download the dataset and extract it into the `raw/` directory. The script expects `raw/ne_10m_admin_1_states_provinces.shp`.
-2. Run the generator with the ISO 3166-1 alpha-2 code, a folder name and an optional simplification level:
-
-   ```bash
-   pnpm build:country <ISO_A2> <folder> [simplify]
-
-   # Example
-   pnpm build:country DE germany 8%
-   ```
-
-3. The script writes `src/countries/<folder>/index.ts` and `src/countries/<folder>/regions.ts`.
-4. Run `pnpm dev` and check the new country in the playground.
-
-The script filters the dataset by country, simplifies the shapes with [mapshaper](https://github.com/mbloch/mapshaper) and projects them to SVG paths with a Mercator projection (1000 units wide). A lower `simplify` percentage gives a smaller file with less detail. The default is `8%`.
-
-Do not edit generated files by hand. Re-run the script instead.
+Read the [Contributing Guide](./CONTRIBUTING.md) for the development setup, the country generation workflow, coding guidelines and the pull request process.
 
 ---
 
