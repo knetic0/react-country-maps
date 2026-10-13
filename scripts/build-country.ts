@@ -7,8 +7,8 @@ import type { FeatureCollection, Geometry, Position } from "geojson";
 const [iso, folder, simplify = "8%"] = process.argv.slice(2);
 
 if (!iso || !folder) {
-  console.error("Kullanım: pnpm build:country <ISO_A2> <klasör> [simplify]");
-  console.error("Örnek:    pnpm build:country DE germany 8%");
+  console.error("Using: pnpm build:country <ISO_A2> <folder> [simplify]");
+  console.error("Example:    pnpm build:country DE germany 8%");
   process.exit(1);
 }
 
@@ -39,7 +39,7 @@ type Props = { iso_3166_2: string; name: string; admin: string };
 const fc = JSON.parse(readFileSync(TMP_FILE, "utf8")) as FeatureCollection<Geometry, Props>;
 
 if (fc.features.length === 0) {
-  console.error(`"${iso}" için bölge bulunamadı. ISO kodunu kontrol et.`);
+  console.error(`"${iso}" not found in ${SOURCE}`);
   process.exit(1);
 }
 
