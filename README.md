@@ -2,6 +2,14 @@
 
 Interactive, accessible SVG maps of countries and their first-level administrative regions (states, provinces, prefectures, counties) for React.
 
+<p align="center">
+  <img
+    src="https://raw.githubusercontent.com/knetic0/react-country-maps/main/.github/assets/react-country-maps.gif"
+    alt="react-country-maps playground demo with an interactive map of Turkey"
+    width="800"
+  />
+</p>
+
 - **36 countries** out of the box, with ready-to-render region geometry
 - **Zero runtime dependencies** besides React
 - **Fully typed** with TypeScript
