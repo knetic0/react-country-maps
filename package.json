@@ -1,6 +1,6 @@
 {
   "name": "react-country-maps",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A collection of React components for displaying country maps",
   "type": "module",
   "main": "./dist/index.js",
