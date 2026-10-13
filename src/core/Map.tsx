@@ -8,6 +8,7 @@ import {
   useState,
   type CSSProperties,
   type ReactElement,
+  type ReactNode,
 } from "react";
 import type { Country, ViewBox, Region, CustomStyleType } from "./types";
 import { Tooltip } from "./Tooltip";
@@ -26,7 +27,7 @@ export interface Props {
   visible?: boolean;
   hoverable?: boolean;
   showTooltip?: boolean;
-  tooltipText?: string | ((region: Region) => string);
+  tooltipText?: ReactNode | ((region: Region) => ReactNode);
   tooltipClassName?: string;
   tooltipStyle?: CSSProperties;
   customStyle?: Partial<CustomStyleType>;
