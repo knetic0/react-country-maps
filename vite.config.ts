@@ -40,8 +40,8 @@ export default defineConfig(({ command }) => ({
         }),
       }),
   ],
-  // The playground uses public/ for its favicon. It must not end up in the package.
-  publicDir: command === 'build' ? false : 'public',
+  // Never copy static files into the package, even if a public/ folder is added later
+  publicDir: false,
   build: {
     lib: {
       entry: {
