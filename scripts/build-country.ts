@@ -4,12 +4,27 @@ import { resolve } from "node:path";
 import { geoMercator, geoPath } from "d3-geo";
 import type { FeatureCollection, Geometry, Position } from "geojson";
 
-const [iso, folder, simplify = "8%"] = process.argv.slice(2);
+// "pnpm build:country -- DE germany" forwards the "--", so drop it
+const [iso, folder, simplify = "8%"] = process.argv.slice(2).filter((arg) => arg !== "--");
 
-if (!iso || !folder) {
-  console.error("Using: pnpm build:country <ISO_A2> <folder> [simplify]");
-  console.error("Example:    pnpm build:country DE germany 8%");
+const usage = () => {
+  console.error("Usage:   pnpm build:country <ISO_A2> <folder> [simplify]");
+  console.error("Example: pnpm build:country DE germany 8%");
   process.exit(1);
+};
+
+if (!iso || !folder) usage();
+if (!/^[A-Z]{2}$/.test(iso)) {
+  console.error(`Invalid ISO code "${iso}". Use two uppercase letters, for example DE.`);
+  usage();
+}
+if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(folder)) {
+  console.error(`Invalid folder "${folder}". Use lowercase kebab-case, for example south-korea.`);
+  usage();
+}
+if (!/^\d+(\.\d+)?%$/.test(simplify)) {
+  console.error(`Invalid simplify value "${simplify}". Use a percentage, for example 8%.`);
+  usage();
 }
 
 const SOURCE = resolve("raw/ne_10m_admin_1_states_provinces.shp");
@@ -21,19 +36,24 @@ const WIDTH = 1000;
 const varName = folder.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
 
 mkdirSync(TMP_DIR, { recursive: true });
-mkdirSync(OUT_DIR, { recursive: true });
 
-execFileSync(
-  resolve("node_modules/.bin/mapshaper"),
-  [
-    SOURCE,
-    "-filter", `iso_a2 == "${iso}"`,
-    "-filter-fields", "iso_3166_2,name,admin",
-    "-simplify", simplify, "keep-shapes",
-    "-o", "format=geojson", TMP_FILE,
-  ],
-  { stdio: "inherit" }
-);
+try {
+  execFileSync(
+    resolve("node_modules/.bin/mapshaper"),
+    [
+      SOURCE,
+      "-filter", `iso_a2 == "${iso}"`,
+      "-filter-fields", "iso_3166_2,name,admin",
+      "-simplify", simplify, "keep-shapes",
+      "-o", "format=geojson", TMP_FILE,
+    ],
+    { stdio: "inherit" }
+  );
+} catch {
+  // mapshaper fails on an empty selection, so an unknown ISO code ends up here
+  console.error(`mapshaper failed. Check that "${iso}" exists in ${SOURCE}.`);
+  process.exit(1);
+}
 
 type Props = { iso_3166_2: string; name: string; admin: string };
 const fc = JSON.parse(readFileSync(TMP_FILE, "utf8")) as FeatureCollection<Geometry, Props>;
@@ -79,8 +99,9 @@ const [[x0, y0], [x1, y1]] = path.bounds(fc);
 const viewBox = {
   left: Math.floor(x0),
   top: Math.floor(y0),
-  width: Math.ceil(x1 - x0),
-  height: Math.ceil(y1 - y0),
+  // Round the far edge up on its own, so the viewBox contains every point
+  width: Math.ceil(x1) - Math.floor(x0),
+  height: Math.ceil(y1) - Math.floor(y0),
 };
 
 const regions = fc.features
@@ -90,7 +111,19 @@ const regions = fc.features
     path: path(f) ?? "",
   }))
   .filter((r) => r.path.length > 0)
-  .sort((a, b) => a.name.localeCompare(b.name));
+  // Fixed locale, so the order does not depend on the machine running the script
+  .sort((a, b) => a.name.localeCompare(b.name, "en") || a.id.localeCompare(b.id, "en"));
+
+// Natural Earth reuses some ISO 3166-2 codes (for example a city and the
+// province around it). Warn, so the problem is visible before a release.
+const seenIds = new Set<string>();
+for (const region of regions) {
+  if (!region.id || !region.name) {
+    console.warn(`! Region with empty id or name: ${JSON.stringify({ id: region.id, name: region.name })}`);
+  }
+  if (seenIds.has(region.id)) console.warn(`! Duplicate region id: ${region.id} (${region.name})`);
+  seenIds.add(region.id);
+}
 
 const header = `// Auto-generated: pnpm build:country ${iso} ${folder} ${simplify}
 // Source: Natural Earth (public domain) — do not edit manually, re-run the script instead`;
@@ -115,8 +148,9 @@ const ${varName} = defineCountry({
 export default ${varName};
 `;
 
+mkdirSync(OUT_DIR, { recursive: true });
 writeFileSync(resolve(OUT_DIR, "regions.ts"), regionsContent);
 writeFileSync(resolve(OUT_DIR, "index.ts"), indexContent);
 
 const sizeKb = (Buffer.byteLength(regionsContent) / 1024).toFixed(1);
-console.log(`✓ ${countryName}: ${regions.length} bölge → src/countries/${folder}/ (${sizeKb} KB)`);
+console.log(`✓ ${countryName}: ${regions.length} regions → src/countries/${folder}/ (${sizeKb} KB)`);

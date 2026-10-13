@@ -460,6 +460,8 @@ Read the [Contributing Guide](./CONTRIBUTING.md) for the development setup, the 
 
 Map geometry is derived from [Natural Earth](https://www.naturalearthdata.com/) (Admin 1 – States, Provinces, version 5.1.1), which is in the public domain. No attribution is legally required, but we thank the Natural Earth project for this resource.
 
+The Turkey map is derived from [svg-turkiye-haritasi](https://github.com/dnomak/svg-turkiye-haritasi) by Doğukan Güven Nomak, used under the MIT License. Its copyright notice is included in [LICENSE](./LICENSE).
+
 Borders and names in this library come from the source dataset. They do not represent a political position of the authors.
 
 ---

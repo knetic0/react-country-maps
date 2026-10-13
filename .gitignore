@@ -23,4 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
+# Natural Earth source data (downloaded locally)
 raw/
+
+# Packed tarballs (pnpm pack)
+*.tgz

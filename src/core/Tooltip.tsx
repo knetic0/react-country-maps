@@ -50,7 +50,7 @@ const CSS = `
   border-top-color: var(--rcm-bg);
 }
 
-/* Üst kenara yakınken alta aç */
+/* Open below the cursor when it is near the top edge */
 .rcm-tooltip[data-placement="bottom"] .rcm-tooltip__content {
   --rcm-offset: 22px;
   transform: translate(-50%, var(--rcm-offset)) scale(0.94);

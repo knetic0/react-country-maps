@@ -6,7 +6,7 @@ import regions from "./regions";
 const germany = defineCountry({
   id: "DE",
   name: "Germany",
-  viewBox: { left: -1, top: -1, width: 1000, height: 1341 },
+  viewBox: { left: -1, top: -1, width: 1001, height: 1342 },
   regions,
 });
 

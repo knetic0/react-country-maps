@@ -6,7 +6,7 @@ import regions from "./regions";
 const finland = defineCountry({
   id: "FI",
   name: "Finland",
-  viewBox: { left: 0, top: -1, width: 1001, height: 2230 },
+  viewBox: { left: 0, top: -1, width: 1001, height: 2231 },
   regions,
 });
 

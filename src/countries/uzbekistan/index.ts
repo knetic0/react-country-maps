@@ -6,7 +6,7 @@ import regions from "./regions";
 const uzbekistan = defineCountry({
   id: "UZ",
   name: "Uzbekistan",
-  viewBox: { left: 0, top: -1, width: 1000, height: 652 },
+  viewBox: { left: 0, top: -1, width: 1000, height: 653 },
   regions,
 });
 

@@ -93,7 +93,9 @@ Open an issue and describe:
 | Script               | Description                                    |
 | -------------------- | ---------------------------------------------- |
 | `pnpm dev`           | Start the playground with hot reload           |
-| `pnpm build`         | Type-check the project and build it            |
+| `pnpm build`         | Type-check the project and build the library   |
+| `pnpm test`          | Run the tests (Vitest), including data checks  |
+| `pnpm typecheck`     | Type-check without building                    |
 | `pnpm lint`          | Run ESLint                                     |
 | `pnpm preview`       | Preview the production build                   |
 | `pnpm build:country` | Generate country data from Natural Earth       |
@@ -118,6 +120,7 @@ react-country-maps/
 │       └── defineCountry.ts  # Typed helper for country definitions
 ├── scripts/
 │   └── build-country.ts      # Country data generator
+├── test/                     # Vitest tests, including country data checks
 ├── playground/               # Local development app (not published)
 └── raw/                      # Source shapefiles (not committed)
 ```
@@ -220,7 +223,7 @@ Test your change in the playground with a small country (for example Denmark) an
 - Write all code in **TypeScript**. Avoid `any`.
 - Write all code, comments, identifiers, UI text and documentation in **English**.
 - Follow the existing code style. Run `pnpm lint` and fix all errors before you commit.
-- Make sure `pnpm build` completes without type errors.
+- Make sure `pnpm test` passes and `pnpm build` completes without type errors.
 - Keep pull requests focused. One pull request should do one thing. Do not mix a new country with unrelated refactoring.
 
 ---
@@ -256,6 +259,7 @@ Write the description in the imperative mood ("add", not "added" or "adds").
 
    ```bash
    pnpm lint
+   pnpm test
    pnpm build
    ```
 

@@ -6,7 +6,7 @@ import regions from "./regions";
 const estonia = defineCountry({
   id: "EE",
   name: "Estonia",
-  viewBox: { left: -1, top: 0, width: 1000, height: 629 },
+  viewBox: { left: -1, top: 0, width: 1001, height: 629 },
   regions,
 });
 

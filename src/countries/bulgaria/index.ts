@@ -6,7 +6,7 @@ import regions from "./regions";
 const bulgaria = defineCountry({
   id: "BG",
   name: "Bulgaria",
-  viewBox: { left: -1, top: 0, width: 1000, height: 651 },
+  viewBox: { left: -1, top: 0, width: 1001, height: 651 },
   regions,
 });
 

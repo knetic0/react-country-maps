@@ -6,7 +6,7 @@ import regions from "./regions";
 const thailand = defineCountry({
   id: "TH",
   name: "Thailand",
-  viewBox: { left: 0, top: -1, width: 1000, height: 1842 },
+  viewBox: { left: 0, top: -1, width: 1001, height: 1843 },
   regions,
 });
 

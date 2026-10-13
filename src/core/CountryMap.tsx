@@ -65,7 +65,7 @@ interface RegionProps {
   onSelect: (region: Region) => void;
 }
 
-const Region = memo(function Region({
+const RegionPath = memo(function RegionPath({
   region,
   hovered,
   idleColor,
@@ -192,7 +192,8 @@ export function CountryMap({
 
   const handleLeave = useCallback((region: Region) => {
     setHovered((current) => (current?.id === region.id ? null : current));
-    latest.current.onLeave?.(region);
+    // onHover is skipped when hoverable is false, so skip its pair too
+    if (latest.current.hoverable) latest.current.onLeave?.(region);
   }, []);
 
   const handleSelect = useCallback((region: Region) => {
@@ -259,7 +260,7 @@ export function CountryMap({
         <g mask={gap > 0 ? `url(#${maskId})` : undefined}>
           {data.regions.map((region) => {
             const element = (
-              <Region
+              <RegionPath
                 key={region.id}
                 region={region}
                 hovered={hovered?.id === region.id}

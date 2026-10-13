@@ -2,14 +2,34 @@
   "name": "react-country-maps",
   "version": "0.0.0",
   "description": "A collection of React components for displaying country maps",
-  "readme": "./README.md",
   "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./countries/*": {
+      "types": "./dist/countries/*/index.d.ts",
+      "default": "./dist/countries/*/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:country": "tsx scripts/build-country.ts"
+    "build:country": "tsx scripts/build-country.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -b",
+    "prepublishOnly": "pnpm typecheck && pnpm test && pnpm build"
   },
   "repository": {
     "type": "git",
@@ -29,12 +49,14 @@
   "bugs": {
     "url": "https://github.com/knetic0/react-country-maps/issues"
   },
-  "dependencies": {
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
     "@types/d3-geo": "^3.1.1",
     "@types/geojson": "^7946.0.16",
     "@types/node": "^24.13.3",
@@ -46,11 +68,15 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.6",
     "globals": "^17.12.0",
+    "jsdom": "^30.1.2",
     "mapshaper": "^0.7.83",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "tsx": "^4.23.15",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.69.0",
     "vite": "^8.3.0",
-    "vite-plugin-dts": "^5.1.2"
+    "vite-plugin-dts": "^5.1.2",
+    "vitest": "^5.0.4"
   }
 }

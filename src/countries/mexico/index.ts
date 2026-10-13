@@ -6,7 +6,7 @@ import regions from "./regions";
 const mexico = defineCountry({
   id: "MX",
   name: "Mexico",
-  viewBox: { left: 0, top: 0, width: 1000, height: 657 },
+  viewBox: { left: 0, top: 0, width: 1001, height: 657 },
   regions,
 });
 

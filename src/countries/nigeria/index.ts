@@ -6,7 +6,7 @@ import regions from "./regions";
 const nigeria = defineCountry({
   id: "NG",
   name: "Nigeria",
-  viewBox: { left: -1, top: -1, width: 1001, height: 811 },
+  viewBox: { left: -1, top: -1, width: 1002, height: 812 },
   regions,
 });
 
