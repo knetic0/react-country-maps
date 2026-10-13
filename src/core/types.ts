@@ -21,4 +21,6 @@ export interface Country {
     name: string;
     viewBox: ViewBox;
     regions: Region[];
+    /** Gap between neighboring regions, in CSS pixels. Defaults to 1.25. Use 0 when the paths already have gaps. */
+    borderWidth?: number;
 }

@@ -3,7 +3,9 @@ import {
   memo,
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -21,6 +23,12 @@ const DEFAULT_COLORS: CustomStyleType = {
   hoverColor: "#dc3522",
 };
 
+// Default gap between regions, in CSS pixels. Matches the gap in the Turkey
+// paths when that map is about 1000px wide.
+const DEFAULT_BORDER_WIDTH = 1.25;
+// Used to convert pixels to viewBox units before the SVG is measured
+const FALLBACK_SVG_WIDTH = 1000;
+
 export interface Props {
   data: Country;
   viewBox?: ViewBox;
@@ -31,6 +39,7 @@ export interface Props {
   tooltipClassName?: string;
   tooltipStyle?: CSSProperties;
   customStyle?: Partial<CustomStyleType>;
+  borderWidth?: number;
   regionStyle?: (
     region: Region,
     state: { hovered: boolean },
@@ -49,6 +58,7 @@ interface RegionProps {
   idleColor: string;
   hoverColor: string;
   clickable: boolean;
+  regionStyle?: Props["regionStyle"];
   onEnter: (region: Region, x: number, y: number) => void;
   onMove: (x: number, y: number) => void;
   onLeave: (region: Region) => void;
@@ -61,6 +71,7 @@ const Region = memo(function Region({
   idleColor,
   hoverColor,
   clickable,
+  regionStyle,
   onEnter,
   onMove,
   onLeave,
@@ -80,6 +91,7 @@ const Region = memo(function Region({
         cursor: clickable ? "pointer" : undefined,
         transition: "fill 120ms ease-out",
         outline: "none",
+        ...regionStyle?.(region, { hovered }),
       }}
       onMouseEnter={(e) => onEnter(region, e.clientX, e.clientY)}
       onMouseMove={(e) => onMove(e.clientX, e.clientY)}
@@ -110,6 +122,8 @@ export function CountryMap({
   tooltipClassName,
   tooltipStyle,
   customStyle,
+  borderWidth,
+  regionStyle,
   regionWrapper,
   onHover,
   onLeave,
@@ -118,9 +132,11 @@ export function CountryMap({
   style,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState<Region | null>(null);
   const [tooltipRegion, setTooltipRegion] = useState<Region | null>(null);
+  const [svgWidth, setSvgWidth] = useState(0);
 
   const latest = useRef({ hoverable, onHover, onLeave, onClick });
   useIsoLayoutEffect(() => {
@@ -129,6 +145,29 @@ export function CountryMap({
 
   const { idleColor, hoverColor } = { ...DEFAULT_COLORS, ...customStyle };
   const vb = viewBox ?? data.viewBox;
+
+  useIsoLayoutEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(([entry]) =>
+      setSvgWidth(entry.contentRect.width),
+    );
+    observer.observe(svg);
+    return () => observer.disconnect();
+  }, []);
+
+  // The gap is set in pixels, so it looks the same at every map size.
+  // The mask needs it in viewBox units.
+  const unitsPerPixel = vb.width / (svgWidth || FALLBACK_SVG_WIDTH);
+  const gap =
+    (borderWidth ?? data.borderWidth ?? DEFAULT_BORDER_WIDTH) * unitsPerPixel;
+  const maskId = `rcm-mask-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  // Every region outline in one path. The mask cuts it out of the map, so the
+  // borders show the page background, whatever its color.
+  const outlines = useMemo(
+    () => data.regions.map((region) => region.path).join(" "),
+    [data.regions],
+  );
 
   const moveTooltip = useCallback((x: number, y: number) => {
     const container = containerRef.current;
@@ -183,13 +222,41 @@ export function CountryMap({
         />
       )}
       <svg
+        ref={svgRef}
         xmlns="http://www.w3.org/2000/svg"
         viewBox={`${vb.left} ${vb.top} ${vb.width} ${vb.height}`}
         role="group"
         aria-label={data.name}
         style={{ width: "100%", height: "auto", display: "block" }}
       >
-        <g>
+        {gap > 0 && (
+          <defs>
+            <mask
+              id={maskId}
+              maskUnits="userSpaceOnUse"
+              x={data.viewBox.left - gap}
+              y={data.viewBox.top - gap}
+              width={data.viewBox.width + gap * 2}
+              height={data.viewBox.height + gap * 2}
+            >
+              <rect
+                x={data.viewBox.left - gap}
+                y={data.viewBox.top - gap}
+                width={data.viewBox.width + gap * 2}
+                height={data.viewBox.height + gap * 2}
+                fill="white"
+              />
+              <path
+                d={outlines}
+                fill="none"
+                stroke="black"
+                strokeWidth={gap}
+                strokeLinejoin="round"
+              />
+            </mask>
+          </defs>
+        )}
+        <g mask={gap > 0 ? `url(#${maskId})` : undefined}>
           {data.regions.map((region) => {
             const element = (
               <Region
@@ -199,6 +266,7 @@ export function CountryMap({
                 idleColor={idleColor}
                 hoverColor={hoverColor}
                 clickable={!!onClick}
+                regionStyle={regionStyle}
                 onEnter={handleEnter}
                 onMove={moveTooltip}
                 onLeave={handleLeave}

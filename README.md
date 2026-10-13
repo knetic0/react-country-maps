@@ -299,6 +299,7 @@ The returned element is rendered inside an `<svg>`, so it must be valid SVG cont
 | `tooltipClassName` | `string`                                                           | —              | Extra class name added to the tooltip root element.                                                         |
 | `tooltipStyle`     | `CSSProperties`                                                    | —              | Inline styles for the tooltip content box.                                                                  |
 | `customStyle`      | `Partial<CustomStyleType>`                                         | —              | Idle and hover fill colors. See [Custom Colors](#custom-colors).                                            |
+| `borderWidth`      | `number`                                                           | `data.borderWidth` | Gap between neighboring regions, in CSS pixels (default `1.25`). The gap shows the page background. Set `0` to remove it. See [Region Borders](#region-borders). |
 | `regionStyle`      | `(region: Region, state: { hovered: boolean }) => CSSProperties \| undefined` | —   | Per-region inline styles. Use it for selection, choropleths and other data-driven styling.                  |
 | `regionWrapper`    | `(element: ReactElement, region: Region) => ReactElement`          | —              | Wraps each region's `<path>` element in custom SVG markup.                                                  |
 | `onHover`          | `(region: Region) => void`                                         | —              | Called when the pointer enters a region, or when a region gets keyboard focus.                              |
@@ -327,6 +328,7 @@ interface Country {
   name: string;      // Display name, e.g. "Germany"
   viewBox: ViewBox;  // Default SVG viewBox for the map
   regions: Region[];
+  borderWidth?: number; // Gap between regions, in CSS pixels (default: 1.25)
 }
 
 interface Region {
@@ -364,7 +366,16 @@ The component renders stable class names and data attributes. You can target the
 | `.rcm-tooltip`               | Tooltip root (positioned by the component)  |
 | `.rcm-tooltip__content`      | Tooltip content box                         |
 
-Example: add region borders.
+### Region Borders
+
+Neighboring regions are separated by a thin gap. The gap is transparent, so it always shows the background behind the map, on light and dark pages. The width is set in CSS pixels, so it stays the same at every map size. The default is `1.25`. Change it with the `borderWidth` prop:
+
+```tsx
+<CountryMap data={germany} borderWidth={3} />  // wider gap
+<CountryMap data={germany} borderWidth={0} />  // no gap
+```
+
+Example: add a colored stroke to each region.
 
 ```css
 .rcm-region {
