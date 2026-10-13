@@ -105,3 +105,16 @@ header p {
   opacity: 0.5;
   font-size: 13px;
 }
+.controls select {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.page.dark .controls select option {
+  background: #18181b;
+}

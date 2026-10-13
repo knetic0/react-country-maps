@@ -1,9 +1,10 @@
 import { useCallback, useState } from "react";
-import turkey from "../src/countries/turkey";
 import { CountryMap } from "../src";
 import type { Region } from "../src/core/types";
+import { countries } from "./countries";
 
 export default function App() {
+  const [countryId, setCountryId] = useState(() => (countries.find((c) => c.id === "TR") ?? countries[0])?.id);
   const [dark, setDark] = useState(true);
   const [showTooltip, setShowTooltip] = useState(true);
   const [hoverable, setHoverable] = useState(true);
@@ -14,7 +15,16 @@ export default function App() {
   const [hovered, setHovered] = useState<Region | null>(null);
   const [log, setLog] = useState<string[]>([]);
 
+  const country = countries.find((c) => c.id === countryId) ?? countries[0];
+
   const pushLog = (line: string) => setLog((prev) => [line, ...prev].slice(0, 8));
+
+  const changeCountry = (id: string) => {
+    setCountryId(id);
+    setSelected(null);
+    setHovered(null);
+    pushLog(`country → ${countries.find((c) => c.id === id)?.name ?? id}`);
+  };
 
   const regionStyle = useCallback(
     (region: Region, { hovered }: { hovered: boolean }) =>
@@ -30,6 +40,16 @@ export default function App() {
       </header>
 
       <section className="controls">
+        <label>
+          Ülke
+          <select value={country?.id ?? ""} onChange={(e) => changeCountry(e.target.value)}>
+            {countries.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name} ({c.regions.length})
+              </option>
+            ))}
+          </select>
+        </label>
         <label>
           <input type="checkbox" checked={dark} onChange={(e) => setDark(e.target.checked)} />
           Koyu tema
@@ -58,29 +78,35 @@ export default function App() {
       </section>
 
       <main className="map-card">
-        <CountryMap
-          data={turkey}
-          showTooltip={showTooltip}
-          hoverable={hoverable}
-          customStyle={{ idleColor, hoverColor }}
-          regionStyle={regionStyle}
-          tooltipText={
-            richTooltip
-              ? (region) => (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                    <strong>{region.name}</strong>
-                    <span style={{ opacity: 0.7, fontSize: 12 }}>id: {region.id}</span>
-                  </div>
-                )
-              : undefined
-          }
-          onHover={(region) => setHovered(region)}
-          onLeave={() => setHovered(null)}
-          onClick={(region) => {
-            setSelected(region);
-            pushLog(`click → ${region.name}`);
-          }}
-        />
+        {!country ? (
+          <p>src/countries altında ülke bulunamadı</p>
+        ) : (
+          <CountryMap
+            key={country.id}
+            data={country}
+            showTooltip={showTooltip}
+            hoverable={hoverable}
+            customStyle={{ idleColor, hoverColor }}
+            regionStyle={regionStyle}
+            tooltipText={
+              richTooltip
+                ? (region) => (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      <strong>{region.name}</strong>
+                      <span style={{ opacity: 0.7, fontSize: 12 }}>id: {region.id}</span>
+                    </div>
+                  )
+                : undefined
+            }
+            style={{ maxWidth: country.viewBox.height > country.viewBox.width ? 520 : undefined, margin: "0 auto" }}
+            onHover={(region) => setHovered(region)}
+            onLeave={() => setHovered(null)}
+            onClick={(region) => {
+              setSelected(region);
+              pushLog(`click → ${region.name}`);
+            }}
+          />
+        )}
       </main>
 
       <section className="status">
@@ -101,7 +127,7 @@ export default function App() {
 
       <section className="multi">
         <span>Aynı sayfada ikinci harita (ID çakışması testi)</span>
-        <CountryMap data={turkey} showTooltip customStyle={{ idleColor: "#a1a1aa", hoverColor: "#16a34a" }} />
+        {country && <CountryMap key={country.id} data={country} showTooltip customStyle={{ idleColor: "#a1a1aa", hoverColor: "#16a34a" }} />}
       </section>
     </div>
   );

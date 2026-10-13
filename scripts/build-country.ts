@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { geoMercator, geoPath } from "d3-geo";
-import type { FeatureCollection, Geometry } from "geojson";
+import type { FeatureCollection, Geometry, Position } from "geojson";
 
 const [iso, folder, simplify = "8%"] = process.argv.slice(2);
 
@@ -44,6 +44,33 @@ if (fc.features.length === 0) {
 }
 
 const countryName = fc.features[0].properties.admin;
+
+const ringArea = (ring: Position[]) => {
+  let sum = 0;
+  for (let i = 0; i < ring.length - 1; i++) {
+    const [x1, y1] = ring[i];
+    const [x2, y2] = ring[i + 1];
+    sum += x1 * y2 - x2 * y1;
+  }
+  return sum / 2;
+};
+
+const rewindPolygon = (rings: Position[][]) =>
+  rings.map((ring, i) => {
+    const area = ringArea(ring);
+    const isExterior = i === 0;
+    const needsReverse = isExterior ? area > 0 : area < 0;
+    return needsReverse ? [...ring].reverse() : ring;
+  });
+
+for (const feature of fc.features) {
+  const geometry = feature.geometry;
+  if (geometry.type === "Polygon") {
+    geometry.coordinates = rewindPolygon(geometry.coordinates);
+  } else if (geometry.type === "MultiPolygon") {
+    geometry.coordinates = geometry.coordinates.map(rewindPolygon);
+  }
+}
 
 const projection = geoMercator().fitWidth(WIDTH, fc);
 const path = geoPath(projection).digits(1);
