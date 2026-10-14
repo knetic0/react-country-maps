@@ -1,0 +1,84 @@
+name: Map data problem
+description: Report a wrong border, a missing or extra region, a wrong region name or a wrong region ID.
+title: "[Map data]: "
+labels: ["bug", "map data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping us improve the map data.
+
+        Country data is generated from the [Natural Earth Admin 1 – States, Provinces](https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-1-states-provinces/) dataset. Some problems come from the dataset itself, for example a recent administrative reform that the dataset does not include yet. Please report them anyway, so that we can document them or fix them with an override.
+
+  - type: input
+    id: country
+    attributes:
+      label: Country
+      description: The country name and its import path.
+      placeholder: Germany (react-country-maps/countries/germany)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: problem-type
+    attributes:
+      label: Problem type
+      multiple: true
+      options:
+        - Wrong border or shape
+        - Missing region
+        - Extra or duplicate region
+        - Wrong region name
+        - Wrong region ID (ISO 3166-2 code)
+        - Missing island or exclave
+        - Gap or overlap between regions
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: region-ids
+    attributes:
+      label: Region ID(s)
+      description: The ID of each affected region. You can read the IDs from `country.regions` or from the tooltip in the playground.
+      placeholder: DE-BY, DE-BW
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is wrong, and what is correct?
+      placeholder: The region DE-BY has the name "Bayern". The common English name is "Bavaria".
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: Source for the correct data
+      description: A link to a reliable source, for example the ISO 3166-2 entry, a government website or Wikipedia.
+      placeholder: https://www.iso.org/obp/ui/#iso:code:3166:DE
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: A screenshot of the problem, if it is visual.
+
+  - type: input
+    id: package-version
+    attributes:
+      label: react-country-maps version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: breaking-change
+    attributes:
+      label: Region ID changes
+      description: Users store region IDs and join them with their own data, so a change to a region ID is a breaking change.
+      options:
+        - label: The fix renames or removes one or more region IDs.

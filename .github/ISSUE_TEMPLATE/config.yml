@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/knetic0/react-country-maps#readme
+    about: Read the API reference, the usage examples and the list of available countries.
+  - name: Contributing Guide
+    url: https://github.com/knetic0/react-country-maps/blob/main/CONTRIBUTING.md
+    about: Learn how to set up the project, add a country and open a pull request.

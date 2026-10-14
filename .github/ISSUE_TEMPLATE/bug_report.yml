@@ -1,0 +1,109 @@
+name: Bug report
+description: Report a problem with the component, its props, events, tooltip, styling or build output.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug.
+
+        Before you continue, search the [existing issues](https://github.com/knetic0/react-country-maps/issues) to check whether someone has already reported the problem.
+
+        For a wrong border, a missing region or a wrong region name, use the **Map data problem** template instead.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and short description of the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: The steps that cause the bug.
+      placeholder: |
+        1. Render `<CountryMap data={germany} showTooltip />`
+        2. Hover over Bavaria
+        3. Move the mouse to the edge of the map
+        4. See the error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead. Include error messages and screenshots, if you have them.
+    validations:
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Minimal code example
+      description: The smallest code that shows the bug. This is automatically formatted as code, so you do not need backticks.
+      render: tsx
+      placeholder: |
+        import { CountryMap } from "react-country-maps";
+        import germany from "react-country-maps/countries/germany";
+
+        export default function App() {
+          return <CountryMap data={germany} showTooltip />;
+        }
+
+  - type: input
+    id: reproduction-link
+    attributes:
+      label: Reproduction link
+      description: A link to a reproduction (CodeSandbox, StackBlitz or a small repository). This helps us fix the bug faster.
+      placeholder: https://stackblitz.com/edit/...
+
+  - type: input
+    id: package-version
+    attributes:
+      label: react-country-maps version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: react-version
+    attributes:
+      label: React version
+      placeholder: "19.2.0"
+    validations:
+      required: true
+
+  - type: input
+    id: framework
+    attributes:
+      label: Framework or bundler
+      description: For example Vite, Next.js (App Router or Pages Router), Remix or Create React App. Include the version.
+      placeholder: Next.js 16.0.0 (App Router)
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and operating system
+      description: Required if the problem is visual or interactive.
+      placeholder: Chrome 140 on macOS 26
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Anything else that can help us understand the problem.

@@ -1,0 +1,50 @@
+name: Feature request
+description: Propose a new feature or an improvement to the component or its API.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for your idea.
+
+        Before you continue, search the [existing issues](https://github.com/knetic0/react-country-maps/issues) to check whether someone has already proposed it. To request a new country, use the **Country request** template instead.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem do you want to solve? Explain the use case, not only the solution.
+      placeholder: I want to show a legend next to a choropleth map, but...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you like the feature to work? If it adds or changes props, show an example.
+      render: tsx
+      placeholder: |
+        <CountryMap data={germany} legend={{ position: "bottom-right" }} />
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Other solutions or workarounds you considered.
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Screenshots, mockups or links to similar features in other libraries.
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I want to open a pull request that implements this feature.

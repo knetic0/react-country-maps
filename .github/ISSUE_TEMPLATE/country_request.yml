@@ -1,0 +1,55 @@
+name: Country request
+description: Request a country that is not available yet.
+title: "[Country]: "
+labels: ["enhancement", "new country"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for your request.
+
+        Before you continue, check the [Available Countries](https://github.com/knetic0/react-country-maps#available-countries) table and search the [existing issues](https://github.com/knetic0/react-country-maps/issues).
+
+        **Tip:** Adding a country usually takes a few minutes. A script does most of the work:
+
+        ```bash
+        pnpm build:country FR france 8%
+        ```
+
+        If you can, open a pull request instead. The [Contributing Guide](https://github.com/knetic0/react-country-maps/blob/main/CONTRIBUTING.md#adding-a-new-country) explains each step.
+
+  - type: input
+    id: country
+    attributes:
+      label: Country name
+      placeholder: France
+    validations:
+      required: true
+
+  - type: input
+    id: iso-code
+    attributes:
+      label: ISO 3166-1 alpha-2 code
+      description: The two-letter country code, in uppercase.
+      placeholder: FR
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: How do you plan to use this country? This helps us prioritize requests.
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes about the regions
+      description: Anything we should know about the first-level administrative divisions of this country, for example a recent reform or regions with a special status.
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I want to open a pull request that adds this country.

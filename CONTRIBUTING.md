@@ -4,6 +4,8 @@ Thank you for your interest in contributing! This project is open source, and co
 
 This guide explains how to set up the project, how the code is organized and what we expect from a pull request.
 
+This project has a [Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you agree to follow it.
+
 ## Table of Contents
 
 - [Ways to Contribute](#ways-to-contribute)
