@@ -307,7 +307,7 @@ The returned element is rendered inside an `<svg>`, so it must be valid SVG cont
 | `tooltipClassName` | `string`                                                           | —              | Extra class name added to the tooltip root element.                                                         |
 | `tooltipStyle`     | `CSSProperties`                                                    | —              | Inline styles for the tooltip content box.                                                                  |
 | `customStyle`      | `Partial<CustomStyleType>`                                         | —              | Idle and hover fill colors. See [Custom Colors](#custom-colors).                                            |
-| `borderWidth`      | `number`                                                           | `data.borderWidth` | Gap between neighboring regions, in CSS pixels (default `1.25`). The gap shows the page background. Set `0` to remove it. See [Region Borders](#region-borders). |
+| `borderWidth`      | `number`                                                           | `1.25`         | Gap between neighboring regions, in CSS pixels. The gap shows the page background. Set `0` to remove it. See [Region Borders](#region-borders). |
 | `regionStyle`      | `(region: Region, state: { hovered: boolean }) => CSSProperties \| undefined` | —   | Per-region inline styles. Use it for selection, choropleths and other data-driven styling.                  |
 | `regionWrapper`    | `(element: ReactElement, region: Region) => ReactElement`          | —              | Wraps each region's `<path>` element in custom SVG markup.                                                  |
 | `onHover`          | `(region: Region) => void`                                         | —              | Called when the pointer enters a region, or when a region gets keyboard focus.                              |
@@ -336,7 +336,6 @@ interface Country {
   name: string;      // Display name, e.g. "Germany"
   viewBox: ViewBox;  // Default SVG viewBox for the map
   regions: Region[];
-  borderWidth?: number; // Gap between regions, in CSS pixels (default: 1.25)
 }
 
 interface Region {
