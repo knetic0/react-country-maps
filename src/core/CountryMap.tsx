@@ -23,8 +23,7 @@ const DEFAULT_COLORS: CustomStyleType = {
   hoverColor: "#dc3522",
 };
 
-// Default gap between regions, in CSS pixels. Matches the gap in the Turkey
-// paths when that map is about 1000px wide.
+// Default gap between regions, in CSS pixels.
 const DEFAULT_BORDER_WIDTH = 1.25;
 // Used to convert pixels to viewBox units before the SVG is measured
 const FALLBACK_SVG_WIDTH = 1000;
