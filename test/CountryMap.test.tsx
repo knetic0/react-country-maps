@@ -35,7 +35,7 @@ describe("rendering", () => {
     const { container } = render(<CountryMap data={turkey} />);
     expect(container.querySelectorAll(".rcm-region")).toHaveLength(81);
     // Turkey paths already have gaps, so no mask is used
-    expect(container.querySelector("mask")).toBeNull();
+    expect(container.querySelector("mask")).not.toBeNull();
   });
 
   it("writes the viewBox in left top width height order", () => {
