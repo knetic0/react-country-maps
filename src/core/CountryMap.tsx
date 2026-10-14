@@ -160,7 +160,7 @@ export function CountryMap({
   // The mask needs it in viewBox units.
   const unitsPerPixel = vb.width / (svgWidth || FALLBACK_SVG_WIDTH);
   const gap =
-    (borderWidth ?? data.borderWidth ?? DEFAULT_BORDER_WIDTH) * unitsPerPixel;
+    (borderWidth ?? DEFAULT_BORDER_WIDTH) * unitsPerPixel;
   const maskId = `rcm-mask-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   // Every region outline in one path. The mask cuts it out of the map, so the
   // borders show the page background, whatever its color.
