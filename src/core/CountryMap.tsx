@@ -14,6 +14,8 @@ import {
 } from "react";
 import type { Country, ViewBox, Region, CustomStyleType } from "./types";
 import { Tooltip } from "./Tooltip";
+import { useZoom } from "./useZoom";
+import { ZoomControls } from "./ZoomControls";
 
 const useIsoLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -39,6 +41,8 @@ export interface Props {
   tooltipStyle?: CSSProperties;
   customStyle?: Partial<CustomStyleType>;
   borderWidth?: number;
+  zoomable?: boolean;
+  showZoomControls?: boolean;
   regionStyle?: (
     region: Region,
     state: { hovered: boolean },
@@ -122,6 +126,8 @@ export function CountryMap({
   tooltipStyle,
   customStyle,
   borderWidth,
+  zoomable = true,
+  showZoomControls = true,
   regionStyle,
   regionWrapper,
   onHover,
@@ -144,6 +150,14 @@ export function CountryMap({
 
   const { idleColor, hoverColor } = { ...DEFAULT_COLORS, ...customStyle };
   const vb = viewBox ?? data.viewBox;
+  const { zoom, panning, canZoomIn, canZoomOut, zoomIn, zoomOut, handlers } =
+    useZoom(svgRef, zoomable, `${data.id} ${vb.left} ${vb.top} ${vb.width} ${vb.height}`);
+  const view = {
+    left: vb.left + zoom.x * vb.width,
+    top: vb.top + zoom.y * vb.height,
+    width: vb.width / zoom.scale,
+    height: vb.height / zoom.scale,
+  };
 
   useIsoLayoutEffect(() => {
     const svg = svgRef.current;
@@ -157,7 +171,7 @@ export function CountryMap({
 
   // The gap is set in pixels, so it looks the same at every map size.
   // The mask needs it in viewBox units.
-  const unitsPerPixel = vb.width / (svgWidth || FALLBACK_SVG_WIDTH);
+  const unitsPerPixel = view.width / (svgWidth || FALLBACK_SVG_WIDTH);
   const gap =
     (borderWidth ?? DEFAULT_BORDER_WIDTH) * unitsPerPixel;
   const maskId = `rcm-mask-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
@@ -216,7 +230,7 @@ export function CountryMap({
         <Tooltip
           ref={tooltipRef}
           content={tooltipContent}
-          visible={hovered !== null}
+          visible={hovered !== null && !panning}
           className={tooltipClassName}
           style={tooltipStyle}
         />
@@ -224,10 +238,19 @@ export function CountryMap({
       <svg
         ref={svgRef}
         xmlns="http://www.w3.org/2000/svg"
-        viewBox={`${vb.left} ${vb.top} ${vb.width} ${vb.height}`}
+        viewBox={`${view.left} ${view.top} ${view.width} ${view.height}`}
         role="group"
         aria-label={data.name}
-        style={{ width: "100%", height: "auto", display: "block" }}
+        style={{
+          width: "100%",
+          height: "auto",
+          display: "block",
+          // Keep page scroll at full size, take over touch gestures once zoomed
+          touchAction: zoomable ? (zoom.scale > 1 ? "none" : "pan-x pan-y") : undefined,
+          cursor: panning ? "grabbing" : zoom.scale > 1 ? "grab" : undefined,
+          userSelect: zoomable ? "none" : undefined,
+        }}
+        {...(zoomable ? handlers : undefined)}
       >
         {gap > 0 && (
           <defs>
@@ -284,6 +307,14 @@ export function CountryMap({
           })}
         </g>
       </svg>
+      {zoomable && showZoomControls && (
+        <ZoomControls
+          canZoomIn={canZoomIn}
+          canZoomOut={canZoomOut}
+          onZoomIn={zoomIn}
+          onZoomOut={zoomOut}
+        />
+      )}
     </div>
   );
 }

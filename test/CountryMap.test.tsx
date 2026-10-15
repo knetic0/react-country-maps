@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CountryMap, type Country } from "../src";
 import germany from "../src/countries/germany";
@@ -149,7 +149,7 @@ describe("click and keyboard", () => {
 
     rerender(<CountryMap data={twoRegions} onClick={() => {}} />);
     expect(screen.getByRole("button", { name: "West" }).getAttribute("tabindex")).toBe("0");
-    expect(screen.getAllByRole("button")).toHaveLength(2);
+    expect(container.querySelectorAll('.rcm-region[role="button"]')).toHaveLength(2);
   });
 
   it("activates a region with Enter and Space, not with other keys", () => {
@@ -308,5 +308,98 @@ describe("multiple maps", () => {
     expect(region(maps[1], "west").dataset.hovered).toBeUndefined();
     expect(tooltip(maps[0])?.dataset.visible).toBe("true");
     expect(tooltip(maps[1])?.dataset.visible).toBe("false");
+  });
+});
+
+describe("zoom", () => {
+  const viewBox = (container: HTMLElement) =>
+    container.querySelector("svg")?.getAttribute("viewBox")?.split(" ").map(Number);
+
+  // jsdom has no layout, so give the map a size before pointer and wheel events
+  const sized = (container: HTMLElement) => {
+    const svg = container.querySelector("svg") as SVGSVGElement;
+    vi.spyOn(svg, "getBoundingClientRect").mockReturnValue(new DOMRect(0, 0, 400, 200));
+    return svg;
+  };
+
+  it("shows zoom buttons by default, with zoom out disabled at full size", () => {
+    render(<CountryMap data={twoRegions} />);
+    expect(screen.getByRole("group", { name: "Zoom" })).toBeTruthy();
+    expect(screen.getByRole<HTMLButtonElement>("button", { name: "Zoom in" }).disabled).toBe(false);
+    expect(screen.getByRole<HTMLButtonElement>("button", { name: "Zoom out" }).disabled).toBe(true);
+  });
+
+  it("zooms in around the center and back out to the full map", async () => {
+    const { container } = render(<CountryMap data={twoRegions} />);
+    fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
+    await waitFor(() => expect(viewBox(container)?.[2]).toBeCloseTo(200 / 1.6));
+    const [left, top, width, height] = viewBox(container)!;
+    expect(left + width / 2).toBeCloseTo(110);
+    expect(top + height / 2).toBeCloseTo(70);
+
+    fireEvent.click(screen.getByRole("button", { name: "Zoom out" }));
+    await waitFor(() => expect(viewBox(container)).toEqual([10, 20, 200, 100]));
+    expect(screen.getByRole<HTMLButtonElement>("button", { name: "Zoom out" }).disabled).toBe(true);
+  });
+
+  it("zooms with ctrl + wheel around the pointer, and leaves a plain wheel to the page", () => {
+    const { container } = render(<CountryMap data={twoRegions} />);
+    const svg = sized(container);
+
+    expect(fireEvent.wheel(svg, { deltaY: -50, clientX: 0, clientY: 0 })).toBe(true);
+    expect(viewBox(container)).toEqual([10, 20, 200, 100]);
+
+    expect(fireEvent.wheel(svg, { deltaY: -50, ctrlKey: true, clientX: 0, clientY: 0 })).toBe(false);
+    const [left, top, width] = viewBox(container)!;
+    expect(width).toBeLessThan(200);
+    // The top-left corner was under the pointer, so it stays in place
+    expect([left, top]).toEqual([10, 20]);
+  });
+
+  it("pans a zoomed map by dragging, without selecting a region", () => {
+    const onClick = vi.fn();
+    const { container } = render(<CountryMap data={twoRegions} onClick={onClick} />);
+    const svg = sized(container);
+    fireEvent.wheel(svg, { deltaY: -50, ctrlKey: true, clientX: 0, clientY: 0 });
+
+    fireEvent.pointerDown(svg, { pointerId: 1, clientX: 100, clientY: 100, button: 0, pointerType: "mouse" });
+    fireEvent.pointerMove(svg, { pointerId: 1, clientX: 60, clientY: 100, pointerType: "mouse" });
+    fireEvent.pointerUp(svg, { pointerId: 1, pointerType: "mouse" });
+    expect(viewBox(container)?.[0]).toBeGreaterThan(10);
+
+    fireEvent.click(region(container, "west"));
+    expect(onClick).not.toHaveBeenCalled();
+    fireEvent.click(region(container, "west"));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not pan a map at full size", () => {
+    const { container } = render(<CountryMap data={twoRegions} />);
+    const svg = sized(container);
+    fireEvent.pointerDown(svg, { pointerId: 1, clientX: 100, clientY: 100, button: 0, pointerType: "mouse" });
+    fireEvent.pointerMove(svg, { pointerId: 1, clientX: 20, clientY: 100, pointerType: "mouse" });
+    expect(viewBox(container)).toEqual([10, 20, 200, 100]);
+  });
+
+  it("hides the buttons but keeps gestures when showZoomControls is false", () => {
+    const { container } = render(<CountryMap data={twoRegions} showZoomControls={false} />);
+    expect(screen.queryByRole("group", { name: "Zoom" })).toBeNull();
+    fireEvent.wheel(sized(container), { deltaY: -50, ctrlKey: true });
+    expect(viewBox(container)?.[2]).toBeLessThan(200);
+  });
+
+  it("turns zoom off and hides the buttons when zoomable is false", () => {
+    const { container } = render(<CountryMap data={twoRegions} zoomable={false} />);
+    expect(screen.queryByRole("group", { name: "Zoom" })).toBeNull();
+    expect(fireEvent.wheel(sized(container), { deltaY: -50, ctrlKey: true })).toBe(true);
+    expect(viewBox(container)).toEqual([10, 20, 200, 100]);
+  });
+
+  it("resets the zoom when zoomable is turned off", () => {
+    const { container, rerender } = render(<CountryMap data={twoRegions} />);
+    fireEvent.wheel(sized(container), { deltaY: -50, ctrlKey: true });
+    expect(viewBox(container)?.[2]).toBeLessThan(200);
+    rerender(<CountryMap data={twoRegions} zoomable={false} />);
+    expect(viewBox(container)).toEqual([10, 20, 200, 100]);
   });
 });

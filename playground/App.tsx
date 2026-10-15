@@ -8,6 +8,8 @@ export default function App() {
   const [dark, setDark] = useState(true);
   const [showTooltip, setShowTooltip] = useState(true);
   const [hoverable, setHoverable] = useState(true);
+  const [zoomable, setZoomable] = useState(true);
+  const [showZoomControls, setShowZoomControls] = useState(true);
   const [richTooltip, setRichTooltip] = useState(false);
   const [idleColor, setIdleColor] = useState("#444444");
   const [hoverColor, setHoverColor] = useState("#dc3522");
@@ -67,6 +69,14 @@ export default function App() {
           Hoverable
         </label>
         <label>
+          <input type="checkbox" checked={zoomable} onChange={(e) => setZoomable(e.target.checked)} />
+          Zoom
+        </label>
+        <label>
+          <input type="checkbox" checked={showZoomControls} onChange={(e) => setShowZoomControls(e.target.checked)} />
+          Zoom butonları
+        </label>
+        <label>
           Normal
           <input type="color" value={idleColor} onChange={(e) => setIdleColor(e.target.value)} />
         </label>
@@ -86,6 +96,8 @@ export default function App() {
             data={country}
             showTooltip={showTooltip}
             hoverable={hoverable}
+            zoomable={zoomable}
+            showZoomControls={showZoomControls}
             customStyle={{ idleColor, hoverColor }}
             regionStyle={regionStyle}
             tooltipText={

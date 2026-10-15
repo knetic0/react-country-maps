@@ -15,6 +15,7 @@ Interactive, accessible SVG maps of countries and their first-level administrati
 - **Fully typed** with TypeScript
 - **Hover, click and keyboard** interaction on every region
 - **Built-in tooltip** with smart placement and CSS-variable theming
+- **Zoom and pan** with buttons, <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + wheel, trackpad pinch, touch pinch and drag
 - **Responsive** SVG that scales to its container
 - **SSR-safe**, so it works with Next.js, Remix and other server renderers
 - **Bring your own data**: render any country that follows the `Country` shape
@@ -30,6 +31,7 @@ Interactive, accessible SVG maps of countries and their first-level administrati
   - [Handling Events](#handling-events)
   - [Custom Colors](#custom-colors)
   - [Tooltips](#tooltips)
+  - [Zooming](#zooming)
   - [Highlighting a Selected Region](#highlighting-a-selected-region)
   - [Choropleth (Data-Driven) Maps](#choropleth-data-driven-maps)
   - [Wrapping Regions](#wrapping-regions)
@@ -214,6 +216,23 @@ Pass `tooltipText` to customize the content. It accepts a static `ReactNode` or 
 
 The tooltip follows the cursor. Near the top edge of the map, it flips below the cursor automatically. See [Styling](#styling) to change its appearance.
 
+### Zooming
+
+Zoom is on by default. Users can zoom in these ways:
+
+- Press the zoom buttons in the bottom-right corner. The map zooms around its center.
+- Hold <kbd>Ctrl</kbd> (or <kbd>⌘</kbd> on macOS) and turn the mouse wheel, or pinch on a trackpad. The map zooms around the pointer. A plain wheel still scrolls the page.
+- Pinch with two fingers on a touch screen.
+
+When the map is zoomed in, drag it to pan. A drag never selects a region, so `onClick` fires only for real clicks. Zoom goes from 1× to 8×. Borders keep the same pixel width at every zoom level.
+
+```tsx
+<CountryMap data={germany} showZoomControls={false} />  // gestures only, no buttons
+<CountryMap data={germany} zoomable={false} />          // no zoom at all
+```
+
+The zoom resets when `data` or `viewBox` changes.
+
 ### Highlighting a Selected Region
 
 Use `regionStyle` to return per-region inline styles. The function receives the region and its current hover state:
@@ -308,6 +327,8 @@ The returned element is rendered inside an `<svg>`, so it must be valid SVG cont
 | `tooltipStyle`     | `CSSProperties`                                                    | —              | Inline styles for the tooltip content box.                                                                  |
 | `customStyle`      | `Partial<CustomStyleType>`                                         | —              | Idle and hover fill colors. See [Custom Colors](#custom-colors).                                            |
 | `borderWidth`      | `number`                                                           | `1.25`         | Gap between neighboring regions, in CSS pixels. The gap shows the page background. Set `0` to remove it. See [Region Borders](#region-borders). |
+| `zoomable`         | `boolean`                                                          | `true`         | Enables zoom and pan. Set to `false` for a fixed map. This also hides the zoom buttons. See [Zooming](#zooming). |
+| `showZoomControls` | `boolean`                                                          | `true`         | Shows the zoom in and zoom out buttons. Set to `false` to keep zoom gestures without the buttons.           |
 | `regionStyle`      | `(region: Region, state: { hovered: boolean }) => CSSProperties \| undefined` | —   | Per-region inline styles. Use it for selection, choropleths and other data-driven styling.                  |
 | `regionWrapper`    | `(element: ReactElement, region: Region) => ReactElement`          | —              | Wraps each region's `<path>` element in custom SVG markup.                                                  |
 | `onHover`          | `(region: Region) => void`                                         | —              | Called when the pointer enters a region, or when a region gets keyboard focus.                              |
@@ -372,6 +393,8 @@ The component renders stable class names and data attributes. You can target the
 | `.rcm-region[data-hovered]`  | The region under the pointer                |
 | `.rcm-tooltip`               | Tooltip root (positioned by the component)  |
 | `.rcm-tooltip__content`      | Tooltip content box                         |
+| `.rcm-zoom`                  | Zoom button group                           |
+| `.rcm-zoom__button`          | Zoom in and zoom out buttons                |
 
 ### Region Borders
 
@@ -416,6 +439,29 @@ The tooltip styles are injected automatically, so you do not need to import a st
 
 The tooltip respects `prefers-reduced-motion`.
 
+### Zoom Controls Theme
+
+The zoom buttons use the tooltip variables by default, so one theme covers both. Set these variables to style the buttons on their own:
+
+| Variable              | Default                                  |
+| --------------------- | ---------------------------------------- |
+| `--rcm-zoom-bg`       | `--rcm-tooltip-bg`                       |
+| `--rcm-zoom-color`    | `--rcm-tooltip-color`                    |
+| `--rcm-zoom-border`   | `--rcm-tooltip-border`                   |
+| `--rcm-zoom-radius`   | `12px`                                   |
+| `--rcm-zoom-focus`    | `#3b82f6` (keyboard focus ring)          |
+
+To move the buttons, override the position of `.rcm-zoom`:
+
+```css
+.rcm-zoom {
+  top: 12px;
+  bottom: auto;
+}
+```
+
+Zoom button animations respect `prefers-reduced-motion`.
+
 ---
 
 ## Accessibility
@@ -424,6 +470,7 @@ The tooltip respects `prefers-reduced-motion`.
 - Each region has an `aria-label` set to its name.
 - When you pass `onClick`, regions get `role="button"` and `tabIndex={0}`. Users can then move between regions with <kbd>Tab</kbd> and activate them with <kbd>Enter</kbd> or <kbd>Space</kbd>.
 - Keyboard focus triggers the same hover state, tooltip and `onHover` callback as the pointer.
+- The zoom buttons are native `<button>` elements with the labels "Zoom in" and "Zoom out". A button is disabled when the map cannot zoom further in that direction.
 
 ---
 
