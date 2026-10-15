@@ -6,7 +6,7 @@ import regions from "./regions";
 const syria = defineCountry({
   id: "SY",
   name: "Syria",
-  viewBox: { left: 0, top: 0, width: 1000, height: 919 },
+  viewBox: { left: 0, top: 0, width: 1001, height: 921 },
   regions,
 });
 
