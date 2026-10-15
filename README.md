@@ -693,6 +693,8 @@ When the source data has a wrong code, an area to leave out or regions to merge,
 
 Read the [Contributing Guide](./CONTRIBUTING.md) for the development setup, the country generation workflow, coding guidelines and the pull request process.
 
+To report a security vulnerability, follow the [Security Policy](./SECURITY.md). Do not open a public issue.
+
 ---
 
 ## Data Source & Attribution

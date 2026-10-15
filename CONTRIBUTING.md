@@ -38,6 +38,8 @@ If you plan a large change, open an issue first. This lets us agree on the appro
 
 Before you open an issue, search the existing issues to check whether someone has already reported the problem.
 
+**Do not report security vulnerabilities in a public issue.** Follow the [Security Policy](./SECURITY.md) instead.
+
 A good bug report includes:
 
 - The version of `react-country-maps`, React and your bundler or framework (for example Vite, Next.js)
@@ -274,7 +276,7 @@ Write the description in the imperative mood ("add", not "added" or "adds").
    ```
 
 4. Push the branch to your fork and open a pull request against `main`.
-5. Describe **what** you changed and **why**. Link any related issue (for example `Closes #12`). Add screenshots for visual changes.
+5. Fill in the pull request template. Describe **what** you changed and **why**. Link any related issue (for example `Closes #12`). Add screenshots for visual changes.
 6. A maintainer will review your pull request. Please respond to feedback and push updates to the same branch.
 
 Pull requests are merged when they pass review and all checks succeed.

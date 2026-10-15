@@ -6,3 +6,6 @@ contact_links:
   - name: Contributing Guide
     url: https://github.com/knetic0/react-country-maps/blob/main/CONTRIBUTING.md
     about: Learn how to set up the project, add a country and open a pull request.
+  - name: Security Vulnerability
+    url: https://github.com/knetic0/react-country-maps/security/advisories/new
+    about: Report security vulnerabilities privately. Do not open a public issue. See SECURITY.md.
