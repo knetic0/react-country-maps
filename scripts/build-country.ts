@@ -3,7 +3,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { geoMercator, geoPath } from "d3-geo";
 import type { FeatureCollection, Geometry, Position } from "geojson";
-import { FEATURE_FIXES, MERGED_NAMES } from "./region-overrides.ts";
+import { EXCLUDED_REGIONS, FEATURE_FIXES, MERGED_NAMES } from "./region-overrides.ts";
 
 // "pnpm build:country -- DE germany" forwards the "--", so drop it
 const [iso, folder, simplify = "8%"] = process.argv.slice(2).filter((arg) => arg !== "--");
@@ -39,6 +39,14 @@ const WIDTH = 1000;
 
 const varName = folder.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
 
+// Filter before simplifying, so excluded regions do not use up the vertex budget
+const filter = [
+  `iso_a2 == "${iso}"`,
+  ...EXCLUDED_REGIONS.filter((code) => code.startsWith(`${iso}-`)).map(
+    (code) => `iso_3166_2 != "${code}"`
+  ),
+].join(" && ");
+
 mkdirSync(TMP_DIR, { recursive: true });
 
 try {
@@ -46,7 +54,7 @@ try {
     MAPSHAPER,
     [
       SOURCE,
-      "-filter", `iso_a2 == "${iso}"`,
+      "-filter", filter,
       "-filter-fields", "iso_3166_2,adm1_code,name,admin",
       "-simplify", simplify, "keep-shapes",
       "-o", "format=geojson", TMP_FILE,

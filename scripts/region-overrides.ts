@@ -31,6 +31,17 @@ export const FEATURE_FIXES: Record<string, Fix> = {
 };
 
 /**
+ * ISO 3166-2 codes of regions to leave out of a map. The script removes them
+ * before it simplifies the shapes.
+ */
+export const EXCLUDED_REGIONS: string[] = [
+  // United States: Alaska and Hawaii lie far from the other states and
+  // stretch the viewBox. Alaska also crosses the antimeridian.
+  "US-AK",
+  "US-HI",
+];
+
+/**
  * Names for regions that are merged from several features (for example a
  * county split into councils). Other merged regions keep the name of their
  * largest feature.
