@@ -86,6 +86,16 @@ for (const { properties } of fc.features) {
   properties.name = fix.name ?? properties.name;
 }
 
+type RegionFeature = Feature<Geometry, Props>;
+type Bounds = [[number, number], [number, number]];
+
+const polygonsOf = (geometry: Geometry): Position[][][] =>
+  geometry.type === "Polygon" ? [geometry.coordinates] : geometry.type === "MultiPolygon" ? geometry.coordinates : [];
+
+// A polygon is inside the bounds when its first point is
+const isInBounds = ([[[lon, lat]]]: Position[][], [[west, south], [east, north]]: Bounds) =>
+  lon >= west && lon <= east && lat >= south && lat <= north;
+
 // Features that still share a code are parts of one subdivision, for example
 // a county split into councils. Merge them, so every id is a single region.
 const ids = fc.features.map((f) => f.properties.iso_3166_2);
@@ -136,23 +146,21 @@ for (const feature of fc.features) {
   }
 }
 
-type RegionFeature = Feature<Geometry, Props>;
-
 // Split a region into the polygons that stay on the main map and the
 // polygons that move to its inset (see INSETS in region-overrides.ts)
 const splitInset = (f: RegionFeature): { main: RegionFeature | null; inset: RegionFeature | null } => {
   const inset = INSETS[f.properties.iso_3166_2];
   if (!inset) return { main: f, inset: null };
-  if (!inset.bounds) return { main: null, inset: f };
+  const { bounds } = inset;
+  if (!bounds) return { main: null, inset: f };
 
-  const [[west, south], [east, north]] = inset.bounds;
-  const isInside = ([[[lon, lat]]]: Position[][]) => lon >= west && lon <= east && lat >= south && lat <= north;
-  const { geometry } = f;
-  const polygons =
-    geometry.type === "Polygon" ? [geometry.coordinates] : geometry.type === "MultiPolygon" ? geometry.coordinates : [];
+  const polygons = polygonsOf(f.geometry);
   const part = (coordinates: Position[][][]): RegionFeature | null =>
     coordinates.length > 0 ? { ...f, geometry: { type: "MultiPolygon", coordinates } } : null;
-  return { main: part(polygons.filter((p) => !isInside(p))), inset: part(polygons.filter(isInside)) };
+  return {
+    main: part(polygons.filter((p) => !isInBounds(p, bounds))),
+    inset: part(polygons.filter((p) => isInBounds(p, bounds))),
+  };
 };
 
 const parts = fc.features.map((feature) => ({ feature, ...splitInset(feature) }));
