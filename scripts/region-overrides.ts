@@ -125,7 +125,8 @@ export const EXCLUDED_REGIONS: string[] = [
   // Norway: Bouvet Island is a dependency in the South Atlantic, not a county
   "NO-X01~",
   // Russia: Natural Earth puts Crimea and Sevastopol under Russia with their
-  // Ukrainian codes. They are part of Ukraine under international law.
+  // Ukrainian codes. They are part of Ukraine under international law, so the
+  // Ukraine map adds them back (see ADDED_REGIONS).
   "UA-43",
   "UA-40",
   // Seychelles: the Outer Islands are outside every district, have no code,
@@ -138,6 +139,16 @@ export const EXCLUDED_REGIONS: string[] = [
   "AE-X01~",
   "AE-X02~",
 ];
+
+/**
+ * Regions that Natural Earth puts under another country. The script adds them
+ * to the map of the country in the key (an ISO 3166-1 alpha-2 code), even if
+ * EXCLUDED_REGIONS leaves them out of every other map.
+ */
+export const ADDED_REGIONS: Record<string, string[]> = {
+  // Ukraine: Crimea and Sevastopol (see EXCLUDED_REGIONS)
+  UA: ["UA-43", "UA-40"],
+};
 
 interface Inset {
   /** Longitude to center the projection on, so a region that crosses the antimeridian stays in one piece */

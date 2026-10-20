@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { geoMercator, geoPath } from "d3-geo";
 import type { Feature, FeatureCollection, Geometry, Position } from "geojson";
 import {
+  ADDED_REGIONS,
   EXCLUDED_REGIONS,
   FEATURE_FIXES,
   INSETS,
@@ -48,10 +49,12 @@ const varName = folder.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
 
 // Filter before simplifying, so excluded regions do not use up the vertex budget.
 // Every code applies, because some regions carry the code of another country.
-const filter = [
+const ownRegions = [
   `iso_a2 == "${iso}"`,
   ...EXCLUDED_REGIONS.map((code) => `iso_3166_2 != "${code}"`),
 ].join(" && ");
+const addedRegions = (ADDED_REGIONS[iso] ?? []).map((code) => `iso_3166_2 == "${code}"`);
+const filter = [`(${ownRegions})`, ...addedRegions].join(" || ");
 
 mkdirSync(TMP_DIR, { recursive: true });
 
@@ -61,7 +64,7 @@ try {
     [
       SOURCE,
       "-filter", filter,
-      "-filter-fields", "iso_3166_2,adm1_code,name,admin",
+      "-filter-fields", "iso_a2,iso_3166_2,adm1_code,name,admin",
       "-simplify", simplify, "keep-shapes",
       "-o", "format=geojson", TMP_FILE,
     ],
@@ -73,7 +76,7 @@ try {
   process.exit(1);
 }
 
-type Props = { iso_3166_2: string; adm1_code: string; name: string; admin: string };
+type Props = { iso_a2: string; iso_3166_2: string; adm1_code: string; name: string; admin: string };
 const readCollection = (file: string) =>
   JSON.parse(readFileSync(file, "utf8")) as FeatureCollection<Geometry, Props>;
 let fc = readCollection(TMP_FILE);
@@ -83,7 +86,8 @@ if (fc.features.length === 0) {
   process.exit(1);
 }
 
-const countryName = fc.features[0].properties.admin;
+// Added regions can come from another country, so take the name from an own region
+const countryName = (fc.features.find((f) => f.properties.iso_a2 === iso) ?? fc.features[0]).properties.admin;
 
 // Fix the ISO codes that Natural Earth gets wrong (see region-overrides.ts)
 for (const { properties } of fc.features) {

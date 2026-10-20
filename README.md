@@ -10,7 +10,7 @@ Interactive, accessible SVG maps of countries and their first-level administrati
   />
 </p>
 
-- **177 countries** out of the box, with ready-to-render region geometry
+- **199 countries** out of the box, with ready-to-render region geometry
 - **Zero runtime dependencies** besides React
 - **Fully typed** with TypeScript
 - **Hover, click and keyboard** interaction on every region
@@ -104,6 +104,7 @@ Import a country from `react-country-maps/countries/<name>`.
 | Antigua and Barbuda              | `react-country-maps/countries/antigua-and-barbuda`              | `AG`     |       8 |
 | Argentina                        | `react-country-maps/countries/argentina`                        | `AR`     |      24 |
 | Armenia                          | `react-country-maps/countries/armenia`                          | `AM`     |      11 |
+| Australia                        | `react-country-maps/countries/australia`                        | `AU`     |       8 |
 | Austria                          | `react-country-maps/countries/austria`                          | `AT`     |       9 |
 | Azerbaijan                       | `react-country-maps/countries/azerbaijan`                       | `AZ`     |      74 |
 | Bahamas                          | `react-country-maps/countries/bahamas`                          | `BS`     |      30 |
@@ -132,6 +133,7 @@ Import a country from `react-country-maps/countries/<name>`.
 | Chad                             | `react-country-maps/countries/chad`                             | `TD`     |      22 |
 | Chile                            | `react-country-maps/countries/chile`                            | `CL`     |      16 |
 | China                            | `react-country-maps/countries/china`                            | `CN`     |      31 |
+| Colombia                         | `react-country-maps/countries/colombia`                         | `CO`     |      33 |
 | Comoros                          | `react-country-maps/countries/comoros`                          | `KM`     |       3 |
 | Costa Rica                       | `react-country-maps/countries/costa-rica`                       | `CR`     |       7 |
 | Croatia                          | `react-country-maps/countries/croatia`                          | `HR`     |      20 |
@@ -144,13 +146,17 @@ Import a country from `react-country-maps/countries/<name>`.
 | Dominican Republic               | `react-country-maps/countries/dominican-republic`               | `DO`     |      32 |
 | DR Congo                         | `react-country-maps/countries/dr-congo`                         | `CD`     |      11 |
 | East Timor                       | `react-country-maps/countries/east-timor`                       | `TL`     |      13 |
+| Ecuador                          | `react-country-maps/countries/ecuador`                          | `EC`     |      24 |
 | Egypt                            | `react-country-maps/countries/egypt`                            | `EG`     |      27 |
 | El Salvador                      | `react-country-maps/countries/el-salvador`                      | `SV`     |      14 |
+| Equatorial Guinea                | `react-country-maps/countries/equatorial-guinea`                | `GQ`     |       7 |
 | Eritrea                          | `react-country-maps/countries/eritrea`                          | `ER`     |       6 |
 | Estonia                          | `react-country-maps/countries/estonia`                          | `EE`     |      15 |
 | Eswatini                         | `react-country-maps/countries/eswatini`                         | `SZ`     |       4 |
 | Ethiopia                         | `react-country-maps/countries/ethiopia`                         | `ET`     |      11 |
+| Fiji                             | `react-country-maps/countries/fiji`                             | `FJ`     |       5 |
 | Finland                          | `react-country-maps/countries/finland`                          | `FI`     |      18 |
+| France                           | `react-country-maps/countries/france`                           | `FR`     |     101 |
 | Gabon                            | `react-country-maps/countries/gabon`                            | `GA`     |       9 |
 | Gambia                           | `react-country-maps/countries/gambia`                           | `GM`     |       6 |
 | Georgia                          | `react-country-maps/countries/georgia`                          | `GE`     |      12 |
@@ -167,6 +173,7 @@ Import a country from `react-country-maps/countries/<name>`.
 | Honduras                         | `react-country-maps/countries/honduras`                         | `HN`     |      18 |
 | Hungary                          | `react-country-maps/countries/hungary`                          | `HU`     |      43 |
 | Iceland                          | `react-country-maps/countries/iceland`                          | `IS`     |       9 |
+| India                            | `react-country-maps/countries/india`                            | `IN`     |      36 |
 | Indonesia                        | `react-country-maps/countries/indonesia`                        | `ID`     |      33 |
 | Iran                             | `react-country-maps/countries/iran`                             | `IR`     |      31 |
 | Iraq                             | `react-country-maps/countries/iraq`                             | `IQ`     |      18 |
@@ -178,6 +185,7 @@ Import a country from `react-country-maps/countries/<name>`.
 | Jordan                           | `react-country-maps/countries/jordan`                           | `JO`     |      12 |
 | Kazakhstan                       | `react-country-maps/countries/kazakhstan`                       | `KZ`     |      16 |
 | Kenya                            | `react-country-maps/countries/kenya`                            | `KE`     |       8 |
+| Kosovo                           | `react-country-maps/countries/kosovo`                           | `XK`     |      30 |
 | Kuwait                           | `react-country-maps/countries/kuwait`                           | `KW`     |       6 |
 | Kyrgyzstan                       | `react-country-maps/countries/kyrgyzstan`                       | `KG`     |       8 |
 | Laos                             | `react-country-maps/countries/laos`                             | `LA`     |      16 |
@@ -191,13 +199,17 @@ Import a country from `react-country-maps/countries/<name>`.
 | Luxembourg                       | `react-country-maps/countries/luxembourg`                       | `LU`     |       3 |
 | Madagascar                       | `react-country-maps/countries/madagascar`                       | `MG`     |       6 |
 | Malawi                           | `react-country-maps/countries/malawi`                           | `MW`     |      27 |
+| Malaysia                         | `react-country-maps/countries/malaysia`                         | `MY`     |      16 |
 | Maldives                         | `react-country-maps/countries/maldives`                         | `MV`     |      20 |
 | Mali                             | `react-country-maps/countries/mali`                             | `ML`     |       9 |
 | Malta                            | `react-country-maps/countries/malta`                            | `MT`     |      68 |
 | Marshall Islands                 | `react-country-maps/countries/marshall-islands`                 | `MH`     |       2 |
 | Mauritania                       | `react-country-maps/countries/mauritania`                       | `MR`     |      13 |
+| Mauritius                        | `react-country-maps/countries/mauritius`                        | `MU`     |      16 |
 | Mexico                           | `react-country-maps/countries/mexico`                           | `MX`     |      32 |
+| Micronesia                       | `react-country-maps/countries/micronesia`                       | `FM`     |       4 |
 | Moldova                          | `react-country-maps/countries/moldova`                          | `MD`     |      38 |
+| Monaco                           | `react-country-maps/countries/monaco`                           | `MC`     |       1 |
 | Mongolia                         | `react-country-maps/countries/mongolia`                         | `MN`     |      22 |
 | Montenegro                       | `react-country-maps/countries/montenegro`                       | `ME`     |      21 |
 | Montserrat                       | `react-country-maps/countries/montserrat`                       | `MS`     |       3 |
@@ -207,11 +219,15 @@ Import a country from `react-country-maps/countries/<name>`.
 | Namibia                          | `react-country-maps/countries/namibia`                          | `NA`     |      13 |
 | Nauru                            | `react-country-maps/countries/nauru`                            | `NR`     |      14 |
 | Nepal                            | `react-country-maps/countries/nepal`                            | `NP`     |      14 |
+| Netherlands                      | `react-country-maps/countries/netherlands`                      | `NL`     |      15 |
+| New Caledonia                    | `react-country-maps/countries/new-caledonia`                    | `NC`     |       3 |
+| New Zealand                      | `react-country-maps/countries/new-zealand`                      | `NZ`     |      17 |
 | Nicaragua                        | `react-country-maps/countries/nicaragua`                        | `NI`     |      17 |
 | Niger                            | `react-country-maps/countries/niger`                            | `NE`     |       8 |
 | Nigeria                          | `react-country-maps/countries/nigeria`                          | `NG`     |      37 |
 | North Korea                      | `react-country-maps/countries/north-korea`                      | `KP`     |      11 |
 | North Macedonia                  | `react-country-maps/countries/north-macedonia`                  | `MK`     |      84 |
+| Norway                           | `react-country-maps/countries/norway`                           | `NO`     |      20 |
 | Oman                             | `react-country-maps/countries/oman`                             | `OM`     |      11 |
 | Pakistan                         | `react-country-maps/countries/pakistan`                         | `PK`     |       8 |
 | Palau                            | `react-country-maps/countries/palau`                            | `PW`     |      16 |
@@ -222,12 +238,15 @@ Import a country from `react-country-maps/countries/<name>`.
 | Peru                             | `react-country-maps/countries/peru`                             | `PE`     |      26 |
 | Philippines                      | `react-country-maps/countries/philippines`                      | `PH`     |      83 |
 | Poland                           | `react-country-maps/countries/poland`                           | `PL`     |      16 |
+| Portugal                         | `react-country-maps/countries/portugal`                         | `PT`     |      20 |
 | Qatar                            | `react-country-maps/countries/qatar`                            | `QA`     |       7 |
 | Republic of the Congo            | `react-country-maps/countries/republic-of-the-congo`            | `CG`     |      12 |
 | Romania                          | `react-country-maps/countries/romania`                          | `RO`     |      42 |
+| Russia                           | `react-country-maps/countries/russia`                           | `RU`     |      83 |
 | Rwanda                           | `react-country-maps/countries/rwanda`                           | `RW`     |       5 |
 | Saint Kitts and Nevis            | `react-country-maps/countries/saint-kitts-and-nevis`            | `KN`     |      14 |
 | Saint Lucia                      | `react-country-maps/countries/saint-lucia`                      | `LC`     |      11 |
+| Saint Pierre and Miquelon        | `react-country-maps/countries/saint-pierre-and-miquelon`        | `PM`     |       2 |
 | Saint Vincent and the Grenadines | `react-country-maps/countries/saint-vincent-and-the-grenadines` | `VC`     |       6 |
 | Samoa                            | `react-country-maps/countries/samoa`                            | `WS`     |      11 |
 | San Marino                       | `react-country-maps/countries/san-marino`                       | `SM`     |       9 |
@@ -235,6 +254,7 @@ Import a country from `react-country-maps/countries/<name>`.
 | Saudi Arabia                     | `react-country-maps/countries/saudi-arabia`                     | `SA`     |      13 |
 | Senegal                          | `react-country-maps/countries/senegal`                          | `SN`     |      14 |
 | Serbia                           | `react-country-maps/countries/serbia`                           | `RS`     |      25 |
+| Seychelles                       | `react-country-maps/countries/seychelles`                       | `SC`     |      25 |
 | Sierra Leone                     | `react-country-maps/countries/sierra-leone`                     | `SL`     |       4 |
 | Singapore                        | `react-country-maps/countries/singapore`                        | `SG`     |       5 |
 | Slovakia                         | `react-country-maps/countries/slovakia`                         | `SK`     |       8 |
@@ -244,6 +264,7 @@ Import a country from `react-country-maps/countries/<name>`.
 | South Africa                     | `react-country-maps/countries/south-africa`                     | `ZA`     |       9 |
 | South Korea                      | `react-country-maps/countries/south-korea`                      | `KR`     |      17 |
 | South Sudan                      | `react-country-maps/countries/south-sudan`                      | `SS`     |      10 |
+| Spain                            | `react-country-maps/countries/spain`                            | `ES`     |      52 |
 | Sri Lanka                        | `react-country-maps/countries/sri-lanka`                        | `LK`     |      25 |
 | Sudan                            | `react-country-maps/countries/sudan`                            | `SD`     |      16 |
 | Suriname                         | `react-country-maps/countries/suriname`                         | `SR`     |      10 |
@@ -261,13 +282,14 @@ Import a country from `react-country-maps/countries/<name>`.
 | Turkey                           | `react-country-maps/countries/turkey`                           | `TR`     |      81 |
 | Turkmenistan                     | `react-country-maps/countries/turkmenistan`                     | `TM`     |       5 |
 | Uganda                           | `react-country-maps/countries/uganda`                           | `UG`     |     111 |
-| Ukraine                          | `react-country-maps/countries/ukraine`                          | `UA`     |      25 |
+| Ukraine                          | `react-country-maps/countries/ukraine`                          | `UA`     |      27 |
 | United Arab Emirates             | `react-country-maps/countries/united-arab-emirates`             | `AE`     |       7 |
 | United Kingdom                   | `react-country-maps/countries/united-kingdom`                   | `GB`     |     232 |
-| United States                    | `react-country-maps/countries/united-states`                    | `US`     |      49 |
+| United States                    | `react-country-maps/countries/united-states`                    | `US`     |      51 |
 | Uruguay                          | `react-country-maps/countries/uruguay`                          | `UY`     |      19 |
 | Uzbekistan                       | `react-country-maps/countries/uzbekistan`                       | `UZ`     |      14 |
 | Vanuatu                          | `react-country-maps/countries/vanuatu`                          | `VU`     |       6 |
+| Venezuela                        | `react-country-maps/countries/venezuela`                        | `VE`     |      25 |
 | Vietnam                          | `react-country-maps/countries/vietnam`                          | `VN`     |      63 |
 | Wallis and Futuna                | `react-country-maps/countries/wallis-and-futuna`                | `WF`     |       3 |
 | Yemen                            | `react-country-maps/countries/yemen`                            | `YE`     |      21 |
@@ -280,7 +302,7 @@ Some maps leave out remote or disputed areas. See [Data Notes](#data-notes).
 
 Region IDs follow the [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) standard, for example `DE-BY` for Bavaria or `JP-13` for Tokyo. You can use them as stable keys to join the map with your own data.
 
-Every country uses this format, including Turkey (for example `TR-34` for İstanbul and `TR-16` for Bursa, the same numbers as the license plate codes). Each ID belongs to exactly one region. Some countries use older codes. See [Data Notes](#data-notes).
+Every country uses this format, including Turkey (for example `TR-34` for İstanbul and `TR-16` for Bursa, the same numbers as the license plate codes). Each ID belongs to exactly one region. Some countries use older codes, and a few have no ISO codes at all. See [Data Notes](#data-notes).
 
 To see the exact IDs of a country, read them from the data:
 
@@ -296,23 +318,53 @@ The maps are generated from Natural Earth 5.1.1. Some countries changed their re
 
 **Areas left out of a map**
 
-| Country              | Left out                                                                 |
-| -------------------- | ------------------------------------------------------------------------ |
-| United States        | Alaska and Hawaii. The map shows the 48 contiguous states and `US-DC`.   |
-| China                | The Paracel Islands                                                      |
-| Syria                | The UNDOF buffer zone in the Golan Heights                               |
-| United Arab Emirates | Two jointly controlled zones that have no code                           |
+| Country              | Left out                                                                                                   |
+| -------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Australia            | Ashmore and Cartier Islands, an external territory with no code                                            |
+| China                | The Paracel Islands                                                                                        |
+| New Zealand          | The outlying islands outside every region: Kermadec, Three Kings, Antipodes, Campbell, Auckland and Snares |
+| Norway               | Bouvet Island, a dependency in the South Atlantic                                                          |
+| Russia               | Crimea and Sevastopol. They are on the Ukraine map as `UA-43` and `UA-40`.                                 |
+| Seychelles           | The Outer Islands, which are outside every district                                                        |
+| Syria                | The UNDOF buffer zone in the Golan Heights                                                                 |
+| United Arab Emirates | Two jointly controlled zones that have no code                                                             |
+
+**Insets**
+
+Some countries have regions far from the mainland. At their real position, they would make the mainland small. These parts are scaled and moved next to the mainland, as in an atlas. Their region IDs do not change, but their position on the map is not geographic.
+
+| Country           | Moved parts                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------------- |
+| Australia         | Macquarie Island (part of `AU-TAS`)                                                                  |
+| Chile             | Easter Island (part of `CL-VS`)                                                                      |
+| Colombia          | San Andrés y Providencia (`CO-SAP`) and Malpelo Island (part of `CO-VAC`)                            |
+| Ecuador           | Galápagos (`EC-W`)                                                                                   |
+| Equatorial Guinea | Annobón (`GQ-AN`)                                                                                    |
+| Fiji              | Rotuma (`FJ-R`)                                                                                      |
+| France            | The overseas regions: `FR-GF`, `FR-GP`, `FR-MQ`, `FR-RE` and `FR-YT`                                 |
+| Mauritius         | Rodrigues (`MU-RO`) and Agaléga (`MU-AG`)                                                            |
+| Netherlands       | The Caribbean Netherlands: `NL-BQ1`, `NL-BQ2` and `NL-BQ3`                                           |
+| New Zealand       | The Chatham Islands (`NZ-CIT`)                                                                       |
+| Norway            | Svalbard (`NO-21`) and Jan Mayen (part of `NO-18`)                                                   |
+| Portugal          | The Azores (`PT-20`) and Madeira (`PT-30`)                                                           |
+| South Africa      | The Prince Edward Islands (part of `ZA-WC`)                                                          |
+| Spain             | The Canary Islands (`ES-GC` and `ES-TF`)                                                             |
+| United States     | Alaska (`US-AK`) and Hawaii (`US-HI`)                                                                |
+| Venezuela         | Isla de Aves (part of `VE-W`)                                                                        |
+
+The maps of Fiji and Russia cross the 180th meridian. They are centered on the country, so each map stays in one piece.
 
 **Merged regions**
 
 - Bosnia and Herzegovina has the three ISO 3166-2 entities: `BA-BIH`, `BA-SRP` and `BA-BRC`. ISO deleted the canton codes in 2015.
 - Chad has one Ennedi region with the code `TD-EO`. ISO splits it into Ennedi-Est (`TD-EE`) and Ennedi-Ouest (`TD-EO`), but the source data has only one shape.
+- Small areas with no code in the source data are part of the region they belong to: Jervis Bay Territory (`AU-ACT`), Malpelo Island (`CO-VAC`), Isla de Aves (`VE-W`) and an island in Baydaratskaya Bay (`RU-YAN`).
 
 **Regions from before a reform**
 
 These maps show the regions that existed when the source data was made. Their IDs can differ from the current ISO 3166-2 list:
 
-Bahrain, DR Congo, Ghana, Greenland, Ivory Coast, Kazakhstan, Kenya, Latvia, Libya, Luxembourg, Mauritania, Morocco, Namibia, Nepal, Pakistan and São Tomé and Príncipe. Parts of Italy (Sardinia), the Philippines (Maguindanao) and the United Kingdom (Northern Ireland and Bournemouth) are also affected.
+Bahrain, DR Congo, Ghana, Greenland, Ivory Coast, Kazakhstan, Kenya, Latvia, Libya, Luxembourg, Mauritania, Morocco, Namibia, Nepal, Norway, Pakistan and São Tomé and Príncipe. Parts of Italy (Sardinia), the Philippines (Maguindanao) and the United Kingdom (Northern Ireland and Bournemouth) are also affected.
 
 **IDs that differ from current ISO codes**
 
@@ -321,6 +373,10 @@ The regions of these maps are current, but some IDs use an older ISO code or a w
 Czechia, Estonia, Greece, Guatemala, Hungary, Iceland, Iraq, Italy, Mexico, Moldova, North Macedonia, Oman, the Philippines, Poland, Saint Kitts and Nevis, Saint Lucia, Serbia, Slovenia, Solomon Islands, South Africa, Taiwan, Trinidad and Tobago, Uganda and the United Kingdom.
 
 Bermuda, Montserrat and Palestine have no ISO 3166-2 subdivisions, so their IDs come from the source data.
+
+Kosovo, Monaco, New Caledonia and Saint Pierre and Miquelon have no ISO 3166-2 codes in the source data either. Their IDs are the source data placeholders, for example `XK-X01` for Đakovica. These IDs are not ISO codes. The Monaco map is one region.
+
+Two codes are fixed by hand: Bogotá is `CO-DC` (the source data gives it the code of Cundinamarca), and Port Louis city is `MU-PU` (the source data gives it the code of Port Louis District).
 
 **Region names**
 
@@ -689,7 +745,7 @@ Contributions are welcome, especially new countries and fixes for the regions li
 pnpm build:country FR france 8%
 ```
 
-When the source data has a wrong code, an area to leave out or regions to merge, add an entry to [`scripts/region-overrides.ts`](./scripts/region-overrides.ts) and run the command again.
+When the source data has a wrong code, an area to leave out, regions to merge or a far-away region to show as an inset, add an entry to [`scripts/region-overrides.ts`](./scripts/region-overrides.ts) and run the command again.
 
 Read the [Contributing Guide](./CONTRIBUTING.md) for the development setup, the country generation workflow, coding guidelines and the pull request process.
 
