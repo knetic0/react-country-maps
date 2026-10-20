@@ -83,20 +83,30 @@ export const FEATURE_FIXES: Record<string, Fix> = {
   // Liberia: the two newest counties have no codes
   "LR-X1~": { id: "LR-GP", name: "Gbarpolu" },
   "LR-X2~": { id: "LR-RG" },
+  // Mauritius: Port Louis city reuses the code of Port Louis District (MU-PL).
+  // MU-PU is the code of the city, and the other cities keep their codes too.
+  "MUS-5190": { id: "MU-PU" },
   // Mexico: Alacranes Reef has no name or code. It is part of Yucatán.
   "MEX+99?": { id: "MX-YUC" },
   // Peru: Lima Province reuses the code of Lima Region (PE-LIM)
   "PER-587": { id: "PE-LMA" },
   // Philippines: PH-MNL is not an ISO 3166-2 code. Metro Manila is PH-00.
   "PH-MNL": { id: "PH-00" },
+  // Russia: an island in Baydaratskaya Bay has no name or code. It lies off
+  // the coast of Yamalo-Nenets.
+  "RU-X01~": { id: "RU-YAN" },
   // Tajikistan: the districts under republic subordination have no code
   "TJ-X01~": { id: "TJ-RA", name: "Districts of Republican Subordination" },
+  // Venezuela: Isla de Aves has no name or code. It is one of the Federal
+  // Dependencies (VE-W).
+  "VE-X01~": { id: "VE-W" },
 };
 
 /**
  * Codes of regions to leave out of a map: ISO 3166-2 codes, or the Natural
  * Earth placeholders (ending in "~") of regions that have no ISO code. The
- * script removes them before it simplifies the shapes.
+ * script removes them before it simplifies the shapes. A code applies to every
+ * country, because Natural Earth puts some regions under another country.
  */
 export const EXCLUDED_REGIONS: string[] = [
   // Australia: Ashmore and Cartier Islands is an external territory, not a
@@ -104,6 +114,23 @@ export const EXCLUDED_REGIONS: string[] = [
   "AU-X04~",
   // China: the Paracel Islands are disputed and have no code
   "CN-X01~",
+  // New Zealand: the outlying islands are outside every region and have no
+  // code. The subantarctic and Kermadec Islands also lie far from the mainland.
+  "NZ-X01~", // Kermadec Islands
+  "NZ-X03~", // Three Kings Islands
+  "NZ-X04~", // Antipodes Islands
+  "NZ-X05~", // Campbell Islands
+  "NZ-X06~", // Auckland Islands
+  "NZ-X07~", // The Snares
+  // Norway: Bouvet Island is a dependency in the South Atlantic, not a county
+  "NO-X01~",
+  // Russia: Natural Earth puts Crimea and Sevastopol under Russia with their
+  // Ukrainian codes. They are part of Ukraine under international law.
+  "UA-43",
+  "UA-40",
+  // Seychelles: the Outer Islands are outside every district, have no code,
+  // and spread over 1,000 km of ocean
+  "SC-X02~",
   // Syria: the UN buffer zone in the Golan Heights is not a governorate
   "SY-X01~",
   // United Arab Emirates: jointly controlled zones (Fujairah and Sharjah,
@@ -130,10 +157,14 @@ interface Inset {
   bounds?: [[number, number], [number, number]];
 }
 
+// Insets shared by several regions. They move as one group.
+const CANARY_ISLANDS: Inset = { center: -15.8, scale: 0.7, position: [0, 0.8] };
+const SABA_AND_ST_EUSTATIUS: Inset = { center: -63.1, scale: 6, position: [0, 0.2] };
+
 /**
  * Regions that lie far from the rest of their country. The script draws each
  * one with its own projection and moves it next to the main map, so it does
- * not stretch the viewBox.
+ * not stretch the viewBox. Regions that share one inset object move together.
  */
 export const INSETS: Record<string, Inset> = {
   // United States: Alaska and Hawaii lie far from the other states, and
@@ -151,6 +182,50 @@ export const INSETS: Record<string, Inset> = {
   // and Malpelo Island (Valle del Cauca) 500 km off the Pacific coast
   "CO-SAP": { center: -81.7, scale: 8, position: [0.03, 0.03] },
   "CO-VAC": { center: -81.6, scale: 10, position: [0.02, 0.45], bounds: [[-82, 3.5], [-81, 4.5]] },
+  // Ecuador: the Galápagos Islands lie 1,000 km off the coast
+  "EC-W": { center: -90.6, scale: 0.6, position: [-0.32, 0.35] },
+  // Equatorial Guinea: Annobón lies 350 km south-west of São Tomé
+  "GQ-AN": { center: 5.6, scale: 4, position: [0.02, 0.85] },
+  // Fiji: Rotuma lies 500 km north of the main islands
+  "FJ-R": { center: 177.1, scale: 2, position: [0.05, 0.05] },
+  // France: the overseas regions
+  "FR-GF": { center: -53.1, scale: 0.35, position: [0, 0.55] },
+  "FR-GP": { center: -61.4, scale: 1, position: [0, 0.68] },
+  "FR-MQ": { center: -61, scale: 1.2, position: [0.1, 0.68] },
+  "FR-RE": { center: 55.5, scale: 1.2, position: [0, 0.82] },
+  "FR-YT": { center: 45.1, scale: 1.5, position: [0.1, 0.82] },
+  // Mauritius: Rodrigues lies 600 km east and Agaléga 1,000 km north of the
+  // main island
+  "MU-RO": { center: 63.4, scale: 1, position: [0.75, 0.85] },
+  "MU-AG": { center: 56.5, scale: 2, position: [0.02, 0.02] },
+  // Netherlands: the Caribbean Netherlands
+  "NL-BQ1": { center: -68.3, scale: 2.5, position: [0, 0] },
+  "NL-BQ2": SABA_AND_ST_EUSTATIUS,
+  "NL-BQ3": SABA_AND_ST_EUSTATIUS,
+  // New Zealand: the Chatham Islands lie 800 km east of the mainland, across
+  // the antimeridian
+  "NZ-CIT": { center: -176.5, scale: 1.5, position: [0.8, 0.75] },
+  // Norway: Svalbard lies 650 km north of the mainland, and Jan Mayen
+  // (Nordland) 1,000 km west
+  "NO-21": { center: 20, scale: 0.35, position: [0.55, 0.62] },
+  "NO-18": { center: -8.5, scale: 1, position: [0.5, 0.95], bounds: [[-10, 70.5], [-7, 71.5]] },
+  // Portugal: the Azores and Madeira lie 1,400 km and 1,000 km off the coast
+  "PT-20": { center: -28, scale: 0.45, position: [-0.95, 0.03] },
+  "PT-30": { center: -16.6, scale: 1, position: [-0.45, 0.62] },
+  // Spain: the Canary Islands lie 1,000 km south-west of the mainland
+  "ES-GC": CANARY_ISLANDS,
+  "ES-TF": CANARY_ISLANDS,
+  // Venezuela: Isla de Aves (Federal Dependencies) lies 550 km north of the coast
+  "VE-W": { center: -63.6, scale: 10, position: [0.75, 0.02], bounds: [[-64, 15.5], [-63.3, 16]] },
+};
+
+/**
+ * Longitude to center the main map on, for countries that cross the
+ * antimeridian. The key is the ISO 3166-1 alpha-2 code of the country.
+ */
+export const PROJECTION_CENTERS: Record<string, number> = {
+  FJ: 179,
+  RU: 100,
 };
 
 /**

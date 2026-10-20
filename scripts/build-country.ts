@@ -3,7 +3,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { geoMercator, geoPath } from "d3-geo";
 import type { Feature, FeatureCollection, Geometry, Position } from "geojson";
-import { EXCLUDED_REGIONS, FEATURE_FIXES, INSETS, MERGED_NAMES } from "./region-overrides.ts";
+import { EXCLUDED_REGIONS, FEATURE_FIXES, INSETS, MERGED_NAMES, PROJECTION_CENTERS } from "./region-overrides.ts";
 
 // "pnpm build:country -- DE germany" forwards the "--", so drop it
 const [iso, folder, simplify = "8%"] = process.argv.slice(2).filter((arg) => arg !== "--");
@@ -39,12 +39,11 @@ const WIDTH = 1000;
 
 const varName = folder.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
 
-// Filter before simplifying, so excluded regions do not use up the vertex budget
+// Filter before simplifying, so excluded regions do not use up the vertex budget.
+// Every code applies, because some regions carry the code of another country.
 const filter = [
   `iso_a2 == "${iso}"`,
-  ...EXCLUDED_REGIONS.filter((code) => code.startsWith(`${iso}-`)).map(
-    (code) => `iso_3166_2 != "${code}"`
-  ),
+  ...EXCLUDED_REGIONS.map((code) => `iso_3166_2 != "${code}"`),
 ].join(" && ");
 
 mkdirSync(TMP_DIR, { recursive: true });
@@ -164,9 +163,13 @@ const mainFc: FeatureCollection<Geometry, Props> = {
   ...fc,
   features: parts.flatMap(({ main }) => (main ? [main] : [])),
 };
-const projection = geoMercator().fitWidth(WIDTH, mainFc);
+const projection = geoMercator();
+if (iso in PROJECTION_CENTERS) projection.rotate([-PROJECTION_CENTERS[iso], 0]);
+projection.fitWidth(WIDTH, mainFc);
 const mainPath = geoPath(projection).digits(1);
 const [[mainX0, mainY0], [mainX1, mainY1]] = mainPath.bounds(mainFc);
+
+const insetParts = parts.flatMap(({ inset }) => (inset ? [inset] : []));
 
 const insetPath = (f: RegionFeature) => {
   const inset = INSETS[f.properties.iso_3166_2];
@@ -174,7 +177,13 @@ const insetPath = (f: RegionFeature) => {
     .rotate([-inset.center, 0])
     .scale(projection.scale() * inset.scale)
     .translate([0, 0]);
-  const [[ix0, iy0]] = geoPath(insetProjection).bounds(f);
+  // Regions that share one inset object move as a group, so they keep their
+  // places relative to each other
+  const group: FeatureCollection<Geometry, Props> = {
+    type: "FeatureCollection",
+    features: insetParts.filter((part) => INSETS[part.properties.iso_3166_2] === inset),
+  };
+  const [[ix0, iy0]] = geoPath(insetProjection).bounds(group);
   const [px, py] = inset.position;
   insetProjection.translate([
     mainX0 + px * (mainX1 - mainX0) - ix0,
