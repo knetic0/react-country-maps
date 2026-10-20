@@ -35,6 +35,10 @@ export const FEATURE_FIXES: Record<string, Fix> = {
   // Chad: Natural Earth has one Ennedi region. ISO splits it into Ennedi-Est
   // (TD-EE) and Ennedi-Ouest (TD-EO), so it gets the code of the larger part.
   "TD-X01~": { id: "TD-EO" },
+  // Colombia: Bogotá reuses the code of Cundinamarca (CO-CUN), the department
+  // around it. Malpelo Island has no name or code. It is part of Valle del Cauca.
+  "COL-1399": { id: "CO-DC", name: "Bogotá" },
+  "CO-X01~": { id: "CO-VAC" },
   // Iran: Natural Earth uses the codes from before ISO renumbered every
   // province in 2020, and gives Alborz the old code of Tehran (IR-07)
   "IRN-3231": { id: "IR-00" }, // Markazi
@@ -143,6 +147,10 @@ export const INSETS: Record<string, Inset> = {
   "ZA-WC": { center: 38, scale: 2, position: [0.85, 0.85], bounds: [[37, -47.5], [38.5, -46.5]] },
   // Australia: Macquarie Island (Tasmania) lies 1,500 km south-east of Tasmania
   "AU-TAS": { center: 159, scale: 6, position: [0.06, 0.8], bounds: [[158, -55.5], [160, -54]] },
+  // Colombia: San Andrés y Providencia lies 700 km north-west of the mainland,
+  // and Malpelo Island (Valle del Cauca) 500 km off the Pacific coast
+  "CO-SAP": { center: -81.7, scale: 8, position: [0.03, 0.03] },
+  "CO-VAC": { center: -81.6, scale: 10, position: [0.02, 0.45], bounds: [[-82, 3.5], [-81, 4.5]] },
 };
 
 /**
