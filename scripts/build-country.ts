@@ -137,17 +137,39 @@ for (const feature of fc.features) {
   }
 }
 
+type RegionFeature = Feature<Geometry, Props>;
+
+// Split a region into the polygons that stay on the main map and the
+// polygons that move to its inset (see INSETS in region-overrides.ts)
+const splitInset = (f: RegionFeature): { main: RegionFeature | null; inset: RegionFeature | null } => {
+  const inset = INSETS[f.properties.iso_3166_2];
+  if (!inset) return { main: f, inset: null };
+  if (!inset.bounds) return { main: null, inset: f };
+
+  const [[west, south], [east, north]] = inset.bounds;
+  const isInside = ([[[lon, lat]]]: Position[][]) => lon >= west && lon <= east && lat >= south && lat <= north;
+  const { geometry } = f;
+  const polygons =
+    geometry.type === "Polygon" ? [geometry.coordinates] : geometry.type === "MultiPolygon" ? geometry.coordinates : [];
+  const part = (coordinates: Position[][][]): RegionFeature | null =>
+    coordinates.length > 0 ? { ...f, geometry: { type: "MultiPolygon", coordinates } } : null;
+  return { main: part(polygons.filter((p) => !isInside(p))), inset: part(polygons.filter(isInside)) };
+};
+
+const parts = fc.features.map((feature) => ({ feature, ...splitInset(feature) }));
+
 // Fit the projection to the main map only. Insets get their own projection
-// and move next to it (see region-overrides.ts).
-const isInset = (f: Feature<Geometry, Props>) => f.properties.iso_3166_2 in INSETS;
-const mainFc: FeatureCollection<Geometry, Props> = { ...fc, features: fc.features.filter((f) => !isInset(f)) };
+// and move next to it.
+const mainFc: FeatureCollection<Geometry, Props> = {
+  ...fc,
+  features: parts.flatMap(({ main }) => (main ? [main] : [])),
+};
 const projection = geoMercator().fitWidth(WIDTH, mainFc);
 const mainPath = geoPath(projection).digits(1);
 const [[mainX0, mainY0], [mainX1, mainY1]] = mainPath.bounds(mainFc);
 
-const pathFor = (f: Feature<Geometry, Props>) => {
+const insetPath = (f: RegionFeature) => {
   const inset = INSETS[f.properties.iso_3166_2];
-  if (!inset) return mainPath;
   const insetProjection = geoMercator()
     .rotate([-inset.center, 0])
     .scale(projection.scale() * inset.scale)
@@ -161,9 +183,17 @@ const pathFor = (f: Feature<Geometry, Props>) => {
   return geoPath(insetProjection).digits(1);
 };
 
+const drawn = parts.map(({ feature, main, inset }) => ({
+  feature,
+  pieces: [
+    ...(main ? [{ path: mainPath, part: main }] : []),
+    ...(inset ? [{ path: insetPath(inset), part: inset }] : []),
+  ],
+}));
+
 let [x0, y0, x1, y1] = [Infinity, Infinity, -Infinity, -Infinity];
-for (const f of fc.features) {
-  const [[fx0, fy0], [fx1, fy1]] = pathFor(f).bounds(f);
+for (const { path, part } of drawn.flatMap(({ pieces }) => pieces)) {
+  const [[fx0, fy0], [fx1, fy1]] = path.bounds(part);
   [x0, y0, x1, y1] = [Math.min(x0, fx0), Math.min(y0, fy0), Math.max(x1, fx1), Math.max(y1, fy1)];
 }
 
@@ -175,11 +205,11 @@ const viewBox = {
   height: Math.ceil(y1) - Math.floor(y0),
 };
 
-const regions = fc.features
-  .map((f) => ({
-    id: f.properties.iso_3166_2,
-    name: f.properties.name,
-    path: pathFor(f)(f) ?? "",
+const regions = drawn
+  .map(({ feature, pieces }) => ({
+    id: feature.properties.iso_3166_2,
+    name: feature.properties.name,
+    path: pieces.map(({ path, part }) => path(part) ?? "").join(""),
   }))
   .filter((r) => r.path.length > 0)
   // Fixed locale, so the order does not depend on the machine running the script

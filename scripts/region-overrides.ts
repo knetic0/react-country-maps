@@ -110,6 +110,12 @@ interface Inset {
    * width and height. [1, 1] is the bottom-right corner of the main map.
    */
   position: [number, number];
+  /**
+   * Only the polygons inside these [[west, south], [east, north]] bounds move
+   * to the inset, and the rest of the region stays on the main map. Without
+   * bounds, the whole region moves.
+   */
+  bounds?: [[number, number], [number, number]];
 }
 
 /**
@@ -122,6 +128,11 @@ export const INSETS: Record<string, Inset> = {
   // Alaska crosses the antimeridian
   "US-AK": { center: -152, scale: 0.3, position: [0.75, 0.62] },
   "US-HI": { center: -157, scale: 0.8, position: [0.2, 0.84] },
+  // Chile: Easter Island (Valparaíso) lies 3,500 km off the coast
+  "CL-VS": { center: -109, scale: 5, position: [0.65, 0.76], bounds: [[-110, -28], [-105, -26]] },
+  // South Africa: the Prince Edward Islands (Western Cape) lie 1,800 km
+  // south-east of the mainland
+  "ZA-WC": { center: 38, scale: 2, position: [0.85, 0.85], bounds: [[37, -47.5], [38.5, -46.5]] },
 };
 
 /**

@@ -19,6 +19,12 @@ export default function App() {
 
   const country = countries.find((c) => c.id === countryId) ?? countries[0];
 
+  const aspect = country ? country.viewBox.width / country.viewBox.height : 1;
+  const mapStyle = {
+    maxWidth: `min(${aspect < 1 ? "520px" : "100%"}, ${(75 * aspect).toFixed(2)}vh)`,
+    margin: "0 auto",
+  };
+
   const pushLog = (line: string) => setLog((prev) => [line, ...prev].slice(0, 8));
 
   const changeCountry = (id: string) => {
@@ -110,7 +116,7 @@ export default function App() {
                   )
                 : undefined
             }
-            style={{ maxWidth: country.viewBox.height > country.viewBox.width ? 520 : undefined, margin: "0 auto" }}
+            style={mapStyle}
             onHover={(region) => setHovered(region)}
             onLeave={() => setHovered(null)}
             onClick={(region) => {
@@ -139,7 +145,7 @@ export default function App() {
 
       <section className="multi">
         <span>Aynı sayfada ikinci harita (ID çakışması testi)</span>
-        {country && <CountryMap key={country.id} data={country} showTooltip customStyle={{ idleColor: "#a1a1aa", hoverColor: "#16a34a" }} />}
+        {country && <CountryMap key={country.id} data={country} showTooltip customStyle={{ idleColor: "#a1a1aa", hoverColor: "#16a34a" }} style={mapStyle} />}
       </section>
     </div>
   );

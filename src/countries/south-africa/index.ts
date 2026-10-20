@@ -6,7 +6,7 @@ import regions from "./regions";
 const southAfrica = defineCountry({
   id: "ZA",
   name: "South Africa",
-  viewBox: { left: 0, top: 0, width: 1000, height: 1435 },
+  viewBox: { left: 0, top: -1, width: 1000, height: 884 },
   regions,
 });
 
