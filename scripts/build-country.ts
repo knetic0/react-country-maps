@@ -2,8 +2,8 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { geoMercator, geoPath } from "d3-geo";
-import type { FeatureCollection, Geometry, Position } from "geojson";
-import { EXCLUDED_REGIONS, FEATURE_FIXES, MERGED_NAMES } from "./region-overrides.ts";
+import type { Feature, FeatureCollection, Geometry, Position } from "geojson";
+import { EXCLUDED_REGIONS, FEATURE_FIXES, INSETS, MERGED_NAMES } from "./region-overrides.ts";
 
 // "pnpm build:country -- DE germany" forwards the "--", so drop it
 const [iso, folder, simplify = "8%"] = process.argv.slice(2).filter((arg) => arg !== "--");
@@ -137,9 +137,35 @@ for (const feature of fc.features) {
   }
 }
 
-const projection = geoMercator().fitWidth(WIDTH, fc);
-const path = geoPath(projection).digits(1);
-const [[x0, y0], [x1, y1]] = path.bounds(fc);
+// Fit the projection to the main map only. Insets get their own projection
+// and move next to it (see region-overrides.ts).
+const isInset = (f: Feature<Geometry, Props>) => f.properties.iso_3166_2 in INSETS;
+const mainFc: FeatureCollection<Geometry, Props> = { ...fc, features: fc.features.filter((f) => !isInset(f)) };
+const projection = geoMercator().fitWidth(WIDTH, mainFc);
+const mainPath = geoPath(projection).digits(1);
+const [[mainX0, mainY0], [mainX1, mainY1]] = mainPath.bounds(mainFc);
+
+const pathFor = (f: Feature<Geometry, Props>) => {
+  const inset = INSETS[f.properties.iso_3166_2];
+  if (!inset) return mainPath;
+  const insetProjection = geoMercator()
+    .rotate([-inset.center, 0])
+    .scale(projection.scale() * inset.scale)
+    .translate([0, 0]);
+  const [[ix0, iy0]] = geoPath(insetProjection).bounds(f);
+  const [px, py] = inset.position;
+  insetProjection.translate([
+    mainX0 + px * (mainX1 - mainX0) - ix0,
+    mainY0 + py * (mainY1 - mainY0) - iy0,
+  ]);
+  return geoPath(insetProjection).digits(1);
+};
+
+let [x0, y0, x1, y1] = [Infinity, Infinity, -Infinity, -Infinity];
+for (const f of fc.features) {
+  const [[fx0, fy0], [fx1, fy1]] = pathFor(f).bounds(f);
+  [x0, y0, x1, y1] = [Math.min(x0, fx0), Math.min(y0, fy0), Math.max(x1, fx1), Math.max(y1, fy1)];
+}
 
 const viewBox = {
   left: Math.floor(x0),
@@ -153,7 +179,7 @@ const regions = fc.features
   .map((f) => ({
     id: f.properties.iso_3166_2,
     name: f.properties.name,
-    path: path(f) ?? "",
+    path: pathFor(f)(f) ?? "",
   }))
   .filter((r) => r.path.length > 0)
   // Fixed locale, so the order does not depend on the machine running the script

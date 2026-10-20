@@ -90,10 +90,6 @@ export const FEATURE_FIXES: Record<string, Fix> = {
  * script removes them before it simplifies the shapes.
  */
 export const EXCLUDED_REGIONS: string[] = [
-  // United States: Alaska and Hawaii lie far from the other states and
-  // stretch the viewBox. Alaska also crosses the antimeridian.
-  "US-AK",
-  "US-HI",
   // China: the Paracel Islands are disputed and have no code
   "CN-X01~",
   // Syria: the UN buffer zone in the Golan Heights is not a governorate
@@ -103,6 +99,30 @@ export const EXCLUDED_REGIONS: string[] = [
   "AE-X01~",
   "AE-X02~",
 ];
+
+interface Inset {
+  /** Longitude to center the projection on, so a region that crosses the antimeridian stays in one piece */
+  center: number;
+  /** Size, relative to the scale of the main map */
+  scale: number;
+  /**
+   * Position of the inset's top-left corner, as a fraction of the main map's
+   * width and height. [1, 1] is the bottom-right corner of the main map.
+   */
+  position: [number, number];
+}
+
+/**
+ * Regions that lie far from the rest of their country. The script draws each
+ * one with its own projection and moves it next to the main map, so it does
+ * not stretch the viewBox.
+ */
+export const INSETS: Record<string, Inset> = {
+  // United States: Alaska and Hawaii lie far from the other states, and
+  // Alaska crosses the antimeridian
+  "US-AK": { center: -152, scale: 0.3, position: [0.75, 0.62] },
+  "US-HI": { center: -157, scale: 0.8, position: [0.2, 0.84] },
+};
 
 /**
  * Names for regions that are merged from several features (for example a
