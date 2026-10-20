@@ -3,7 +3,14 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { geoMercator, geoPath } from "d3-geo";
 import type { Feature, FeatureCollection, Geometry, Position } from "geojson";
-import { EXCLUDED_REGIONS, FEATURE_FIXES, INSETS, MERGED_NAMES, PROJECTION_CENTERS } from "./region-overrides.ts";
+import {
+  EXCLUDED_REGIONS,
+  FEATURE_FIXES,
+  INSETS,
+  MERGED_NAMES,
+  PLACEHOLDER_COUNTRIES,
+  PROJECTION_CENTERS,
+} from "./region-overrides.ts";
 
 // "pnpm build:country -- DE germany" forwards the "--", so drop it
 const [iso, folder, simplify = "8%"] = process.argv.slice(2).filter((arg) => arg !== "--");
@@ -84,6 +91,10 @@ for (const { properties } of fc.features) {
   if (!fix) continue;
   properties.iso_3166_2 = fix.id ?? properties.iso_3166_2;
   properties.name = fix.name ?? properties.name;
+}
+
+if (PLACEHOLDER_COUNTRIES.includes(iso)) {
+  for (const { properties } of fc.features) properties.iso_3166_2 = properties.iso_3166_2.replace(/~$/, "");
 }
 
 type RegionFeature = Feature<Geometry, Props>;

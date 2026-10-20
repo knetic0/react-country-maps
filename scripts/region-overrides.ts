@@ -74,11 +74,6 @@ export const FEATURE_FIXES: Record<string, Fix> = {
   "IRN-5490": { id: "IR-30" }, // Alborz
   // Kazakhstan: Almaty Region reuses the code of Almaty City (KZ-ALA)
   "KAZ-3207": { id: "KZ-ALM" },
-  // Kosovo: ISO 3166-2 has no codes for Kosovo. Every municipality keeps its
-  // Natural Earth placeholder without the "~", from XK-X01 to XK-X30.
-  ...Object.fromEntries(
-    Array.from({ length: 30 }, (_, i) => `XK-X${String(i + 1).padStart(2, "0")}`).map((id) => [`${id}~`, { id }])
-  ),
   // Latvia: municipalities reuse the codes of the cities they surround
   "LVA-1081": { id: "LV-025", name: "Daugavpils Municipality" },
   "LVA-1084": { id: "LV-041", name: "Jelgava Municipality" },
@@ -93,9 +88,6 @@ export const FEATURE_FIXES: Record<string, Fix> = {
   "MUS-5190": { id: "MU-PU" },
   // Mexico: Alacranes Reef has no name or code. It is part of Yucatán.
   "MEX+99?": { id: "MX-YUC" },
-  // Monaco: Natural Earth has the whole country as one region with no code.
-  // It keeps the placeholder without the "~".
-  "MC-X01~": { id: "MC-X01" },
   // Peru: Lima Province reuses the code of Lima Region (PE-LIM)
   "PER-587": { id: "PE-LMA" },
   // Philippines: PH-MNL is not an ISO 3166-2 code. Metro Manila is PH-00.
@@ -226,6 +218,18 @@ export const INSETS: Record<string, Inset> = {
   // Venezuela: Isla de Aves (Federal Dependencies) lies 550 km north of the coast
   "VE-W": { center: -63.6, scale: 10, position: [0.75, 0.02], bounds: [[-64, 15.5], [-63.3, 16]] },
 };
+
+/**
+ * Countries and territories whose regions have no ISO 3166-2 codes. Every
+ * region keeps its Natural Earth placeholder without the "~" (for example
+ * XK-X01). The key is the ISO 3166-1 alpha-2 code of the country.
+ */
+export const PLACEHOLDER_COUNTRIES: string[] = [
+  "MC", // Monaco: Natural Earth has no quarters, only the whole country
+  "NC", // New Caledonia
+  "PM", // Saint Pierre and Miquelon
+  "XK", // Kosovo
+];
 
 /**
  * Longitude to center the main map on, for countries that cross the
