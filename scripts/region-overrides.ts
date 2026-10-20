@@ -12,6 +12,11 @@ interface Fix {
  * that has it.
  */
 export const FEATURE_FIXES: Record<string, Fix> = {
+  // Australia: Jervis Bay Territory has no code. The laws of the Australian
+  // Capital Territory (AU-ACT) apply there.
+  "AU-X02~": { id: "AU-ACT" },
+  // Australia: Macquarie Island has no code. It is part of Tasmania (AU-TAS).
+  "AU-X03~": { id: "AU-TAS" },
   // Azerbaijan: Şuşa city has no code. It lies inside Şuşa District (AZ-SUS).
   "AZ-X01~": { id: "AZ-SUS" },
   // Bahamas: New Providence has no code in Natural Earth
@@ -90,6 +95,9 @@ export const FEATURE_FIXES: Record<string, Fix> = {
  * script removes them before it simplifies the shapes.
  */
 export const EXCLUDED_REGIONS: string[] = [
+  // Australia: Ashmore and Cartier Islands is an external territory, not a
+  // state, and has no code
+  "AU-X04~",
   // China: the Paracel Islands are disputed and have no code
   "CN-X01~",
   // Syria: the UN buffer zone in the Golan Heights is not a governorate
@@ -133,6 +141,8 @@ export const INSETS: Record<string, Inset> = {
   // South Africa: the Prince Edward Islands (Western Cape) lie 1,800 km
   // south-east of the mainland
   "ZA-WC": { center: 38, scale: 2, position: [0.85, 0.85], bounds: [[37, -47.5], [38.5, -46.5]] },
+  // Australia: Macquarie Island (Tasmania) lies 1,500 km south-east of Tasmania
+  "AU-TAS": { center: 159, scale: 6, position: [0.06, 0.8], bounds: [[158, -55.5], [160, -54]] },
 };
 
 /**
