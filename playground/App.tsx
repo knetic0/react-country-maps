@@ -13,6 +13,7 @@ export default function App() {
   const [richTooltip, setRichTooltip] = useState(false);
   const [idleColor, setIdleColor] = useState("#444444");
   const [hoverColor, setHoverColor] = useState("#dc3522");
+  const [borderWidth, setBorderWidth] = useState(1.25);
   const [selected, setSelected] = useState<Region | null>(null);
   const [hovered, setHovered] = useState<Region | null>(null);
   const [log, setLog] = useState<string[]>([]);
@@ -90,6 +91,18 @@ export default function App() {
           Hover
           <input type="color" value={hoverColor} onChange={(e) => setHoverColor(e.target.value)} />
         </label>
+        <label>
+          Border
+          <input
+            type="range"
+            min={0}
+            max={5}
+            step={0.25}
+            value={borderWidth}
+            onChange={(e) => setBorderWidth(Number(e.target.value))}
+          />
+          {borderWidth}px
+        </label>
         <button onClick={() => setSelected(null)}>Seçimi temizle</button>
       </section>
 
@@ -105,6 +118,7 @@ export default function App() {
             zoomable={zoomable}
             showZoomControls={showZoomControls}
             customStyle={{ idleColor, hoverColor }}
+            borderWidth={borderWidth}
             regionStyle={regionStyle}
             tooltipText={
               richTooltip
